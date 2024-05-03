@@ -17,6 +17,10 @@ spring:
         hbm2ddl:
           auto: update
         default_batch_fetch_size: 1000
+
+weatherApi:
+  serviceKey: 2eq29jtw%2FkcXgG36iZ8lq6RpzyH8q73fJvW9DwSxRduZG%2FApq0y0EXCzW1aNLj%2BzE1nQvOJDzh7wff2gr2YJsQ%3D%3D
+
 resources:
   location: C:/Users/jooye/Ddareunging_Server/src/main/resources # 개발 환경
   real.properties: # 운영 환경 추가해야 함
