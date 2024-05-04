@@ -77,7 +77,7 @@ public class HomeWeatherController {
 
         try {
             // 초단기 실황 조회에 필요한 정보들 추가
-            urlBuilder.append("?" + URLEncoder.encode("serviceKey", "UTF-8") + serviceKey);
+            urlBuilder.append("?" + URLEncoder.encode("serviceKey", "UTF-8") + "=" + serviceKey);
             urlBuilder.append("&" + URLEncoder.encode("pageNo","UTF-8") + "=" + URLEncoder.encode("1", "UTF-8")); /*페이지번호*/
             urlBuilder.append("&" + URLEncoder.encode("numOfRows","UTF-8") + "=" + URLEncoder.encode("1000", "UTF-8")); /*한 페이지 결과 수*/
             urlBuilder.append("&" + URLEncoder.encode("dataType","UTF-8") + "=" + URLEncoder.encode("JSON", "UTF-8")); /*요청자료형식(XML/JSON) Default: XML*/
@@ -116,6 +116,7 @@ public class HomeWeatherController {
 
             try {
                 JSONObject jObject = new JSONObject(data);
+                log.info("jObject is : " + jObject);
                 JSONObject response = jObject.getJSONObject("response");
                 JSONObject body = response.getJSONObject("body");
                 JSONObject items = body.getJSONObject("items");

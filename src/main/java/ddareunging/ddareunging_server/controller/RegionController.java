@@ -35,7 +35,7 @@ public class RegionController {
     @PostMapping("/region")
     @Transactional
     public ResponseEntity<String> resetRegionList() {
-        String fileLocation = resourceLocation + "/regionList.csv";
+        String fileLocation = resourceLocation + "/regionListByDistrict.csv";
         Path path = Paths.get(fileLocation);
         URI uri = path.toUri();
 
@@ -48,19 +48,10 @@ public class RegionController {
                 if (length(line) == 5) { // line 값이 ,,,,,일 경우, 즉 데이터가 없을 경우 while문 종료
                     System.out.println("while문 종료");
                 } else {
-                    String[] splits = line.split(","); // 오류 발생 지점
-                    em.persist(new Region(Long.parseLong(splits[0]), splits[1], splits[2],
-                            Integer.parseInt(splits[3]), Integer.parseInt(splits[4])));
+                    String[] splits = line.split(",");
+                    em.persist(new Region(Long.parseLong(splits[0]), splits[1],
+                            Integer.parseInt(splits[2]), Integer.parseInt(splits[3])));
                 }
-//                if (length(splits[0]) == 0 || splits[0].isEmpty()) {
-//                    System.out.println("while문 종료");
-//                    break;
-//                } else {
-//                    System.out.println("splits[0] is : " + splits[0]);
-//                    System.out.println("splits[0]'s length is : " + length(splits[0]));
-//                    em.persist(new Region(Long.parseLong(splits[0]), splits[1], splits[2],
-//                            Integer.parseInt(splits[3]), Integer.parseInt(splits[4])));
-//                }
             }
         } catch (IOException e) {
             e.printStackTrace();
