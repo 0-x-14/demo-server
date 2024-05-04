@@ -22,8 +22,6 @@ public class Region {
     
     @Column(name = "district")
     private String district; // 구
-    @Column(name = "subdivision")
-    private String subdivision; // 행정동
 
     private int nx; // 위도
     private int ny; // 경도
@@ -32,10 +30,9 @@ public class Region {
     private Weather weather; // 지역 날씨 정보
 
     // 지역 생성
-    public Region(Long id, String district, String subdivision, int nx, int ny) {
+    public Region(Long id, String district, int nx, int ny) {
         this.id = id;
         this.district = district;
-        this.subdivision = subdivision;
         this.nx = nx;
         this.ny = ny;
     }
@@ -47,7 +44,7 @@ public class Region {
 
     @Override
     public String toString() {
-        return district + " " + subdivision;
+        return district;
         // 사용자의 현재 위치
         // ㅇㅇ구 ㅇㅇ동
     }
