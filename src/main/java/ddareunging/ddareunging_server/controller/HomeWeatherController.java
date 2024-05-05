@@ -56,7 +56,12 @@ public class HomeWeatherController {
         if(min <= 30) { // 30분 전에는 자료가 없으므로 이전 시각을 기준으로 함
             hour -= 1;
         }
-        String hourStr = hour + "00"; // 정시 기준
+        String hourStr = "hourStr";
+        if(hour < 10) { // 0900 과 같이 조회해야 함
+            hourStr = "0" + hour + "00";
+        } else {
+            hourStr = hour + "00"; // 정시 기준
+        }
         String nx = Integer.toString(region.getNx());
         String ny = Integer.toString(region.getNy());
         String currentChangeTime = now.format(DateTimeFormatter.ofPattern("yy.MM.dd ")) + hour;
