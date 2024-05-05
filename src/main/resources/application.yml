@@ -1,0 +1,26 @@
+spring:
+  datasource:
+    url: ${db.url}
+    username: ${db.username}
+    password: ${db.password}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  sql:
+    init:
+      mode:never
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        show_sql: true
+        format_sql: true
+        use_sql_comments: true
+        hbm2ddl:
+          auto: update
+        default_batch_fetch_size: 1000
+
+weatherApi:
+  serviceKey: ${weather.servicekey}
+
+resources:
+  location: C:/Users/jooye/Ddareunging_Server/src/main/resources # 개발 환경
+  real.properties: # 운영 환경 추가해야 함

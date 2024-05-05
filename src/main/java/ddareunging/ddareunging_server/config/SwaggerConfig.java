@@ -6,17 +6,20 @@ import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.servers.Server;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class SwaggerConfig {
 
+    @Value("${spring.datasource.url}")
+    private String baseUrl;
     @Bean
     public OpenAPI DdareungingAPI() {
         Info info = new Info()
                 .title("Ddareunging API")
-                .description("따릉잉 API 명세서")
+                .description("base url : " + baseUrl)
                 .version("1.0.0");
 
         String jwtSchemeName = "JWT TOKEN";
