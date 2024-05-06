@@ -18,9 +18,9 @@ import java.net.URLEncoder;
 @Slf4j
 @Service
 public class GetWeatherService {
-    StringBuilder urlBuilderOfWeather = new StringBuilder("http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtNcst");
-
     public Weather fetchWeatherData(String weatherApiServiceKey, String yyyyMMdd, String hourStr, String nx, String ny, String currentChangeTime) throws IOException, JSONException {
+        StringBuilder urlBuilderOfWeather = new StringBuilder("http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtNcst");
+        log.info("urlBuilderOfWeather is : " + urlBuilderOfWeather);
         // 기상청 단기예보 - 초단기 실황 조회에 필요한 정보들 추가
         urlBuilderOfWeather.append("?" + URLEncoder.encode("serviceKey", "UTF-8") + "=" + weatherApiServiceKey);
         urlBuilderOfWeather.append("&" + URLEncoder.encode("pageNo", "UTF-8") + "=" + URLEncoder.encode("1", "UTF-8")); /*페이지번호*/

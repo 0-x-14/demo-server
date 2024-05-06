@@ -1,6 +1,7 @@
 package ddareunging.ddareunging_server.service;
 
 import ddareunging.ddareunging_server.controller.HomeController;
+import ddareunging.ddareunging_server.domain.Dust;
 import ddareunging.ddareunging_server.domain.Region;
 import ddareunging.ddareunging_server.domain.Weather;
 import ddareunging.ddareunging_server.dto.WeatherResponseDTO;
@@ -39,6 +40,9 @@ public class HomeWeatherService {
     public GetWeatherService getWeatherService;
 
     @Autowired
+    public GetDustService getDustService;
+
+    @Autowired
     public HomeWeatherService(EntityManager em, @Value("${weatherApi.serviceKey}") String serviceKey) {
         this.em = em;
         this.weatherApiServiceKey = serviceKey;
@@ -66,14 +70,18 @@ public class HomeWeatherService {
         }
         String nx = Integer.toString(region.getNx());
         String ny = Integer.toString(region.getNy());
+        String district = region.getDistrict();
         String currentChangeTime = now.format(DateTimeFormatter.ofPattern("yy.MM.dd ")) + hour;
 
         Weather prevWeather = region.getWeather();
+        Dust prevDust = region.getDust();
         if(prevWeather != null && prevWeather.getLastUpdateTime() != null) {
             if(prevWeather.getLastUpdateTime().equals(currentChangeTime)) {
                 // 마지막으로 저장한 시간 이후로 데이터가 업데이트 되지 않았다면 기존의 데이터를 그대로 넘김
+                // 미세먼지 정보와 날씨 정보는 함께 업데이트하므로 if문은 prevWeather에 대해서만 검사하였음
                 return WeatherResponseDTO.builder()
                         .weather(prevWeather)
+                        .dust(prevDust)
                         .message("OK").build();
             }
         }
@@ -83,15 +91,22 @@ public class HomeWeatherService {
 
 
         try {
+            log.info("weather 서비스 호출 >>> 서비스키 : {}, 연월일 : {}, 위도 : {}, 경도 : {}, 마지막 업데이트 시간 : {}", weatherApiServiceKey, yyyyMMdd, hourStr, nx, ny, currentChangeTime);
             Weather weather = getWeatherService.fetchWeatherData(weatherApiServiceKey, yyyyMMdd, hourStr, nx, ny, currentChangeTime);
             region.updateRegionWeather(weather); // 날씨 정보 업데이트
 
+            log.info("dust 서비스 호출 >>> 서비스키 : {}, 구 이름 : {}", weatherApiServiceKey, district);
+            Dust dust = getDustService.fetchDustData(weatherApiServiceKey,district);
+            region.updateRegionDust(dust); // 미세먼지 정보 업데이트
+
             return WeatherResponseDTO.builder()
                     .weather(weather)
+                    .dust(dust)
                     .message("OK").build();
         } catch (IOException e) {
             return WeatherResponseDTO.builder()
                     .weather(null)
+                    .dust(null)
                     .message("날씨 및 미세먼지 정보 조회에 실패했습니다. 잠시 후 다시 시도해주세요").build();
         }
     }
