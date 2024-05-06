@@ -1,6 +1,7 @@
 package ddareunging.ddareunging_server.service;
 
 import ddareunging.ddareunging_server.controller.HomeController;
+import ddareunging.ddareunging_server.domain.Dust;
 import ddareunging.ddareunging_server.domain.Region;
 import ddareunging.ddareunging_server.domain.Weather;
 import ddareunging.ddareunging_server.dto.WeatherResponseDTO;
@@ -36,6 +37,12 @@ public class HomeWeatherService {
     private final String weatherApiServiceKey;
 
     @Autowired
+    public GetWeatherService getWeatherService;
+
+    @Autowired
+    public GetDustService getDustService;
+
+    @Autowired
     public HomeWeatherService(EntityManager em, @Value("${weatherApi.serviceKey}") String serviceKey) {
         this.em = em;
         this.weatherApiServiceKey = serviceKey;
@@ -46,7 +53,6 @@ public class HomeWeatherService {
 
         // 해당 지역 조회
         Region region = em.find(Region.class, regionId);
-        StringBuilder urlBuilderOfWeather = new StringBuilder("http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtNcst");
 
         // 요청 시각 조회
         LocalDateTime now = LocalDateTime.now(); // 현재 시간을 불러옴
@@ -64,14 +70,18 @@ public class HomeWeatherService {
         }
         String nx = Integer.toString(region.getNx());
         String ny = Integer.toString(region.getNy());
+        String district = region.getDistrict();
         String currentChangeTime = now.format(DateTimeFormatter.ofPattern("yy.MM.dd ")) + hour;
 
         Weather prevWeather = region.getWeather();
+        Dust prevDust = region.getDust();
         if(prevWeather != null && prevWeather.getLastUpdateTime() != null) {
             if(prevWeather.getLastUpdateTime().equals(currentChangeTime)) {
                 // 마지막으로 저장한 시간 이후로 데이터가 업데이트 되지 않았다면 기존의 데이터를 그대로 넘김
+                // 미세먼지 정보와 날씨 정보는 함께 업데이트하므로 if문은 prevWeather에 대해서만 검사하였음
                 return WeatherResponseDTO.builder()
                         .weather(prevWeather)
+                        .dust(prevDust)
                         .message("OK").build();
             }
         }
@@ -79,86 +89,24 @@ public class HomeWeatherService {
 
         log.info("API 요청 발송 >>> 지역: {}, 연월일: {}, 시각: {}", region, yyyyMMdd, hourStr);
 
+
         try {
-            // 기상청 단기예보 - 초단기 실황 조회에 필요한 정보들 추가
-            urlBuilderOfWeather.append("?" + URLEncoder.encode("serviceKey", "UTF-8") + "=" + weatherApiServiceKey);
-            urlBuilderOfWeather.append("&" + URLEncoder.encode("pageNo","UTF-8") + "=" + URLEncoder.encode("1", "UTF-8")); /*페이지번호*/
-            urlBuilderOfWeather.append("&" + URLEncoder.encode("numOfRows","UTF-8") + "=" + URLEncoder.encode("1000", "UTF-8")); /*한 페이지 결과 수*/
-            urlBuilderOfWeather.append("&" + URLEncoder.encode("dataType","UTF-8") + "=" + URLEncoder.encode("JSON", "UTF-8")); /*요청자료형식(XML/JSON) Default: XML*/
-            urlBuilderOfWeather.append("&" + URLEncoder.encode("base_date","UTF-8") + "=" + URLEncoder.encode(yyyyMMdd, "UTF-8")); /*‘21년 6월 28일 발표*/
-            urlBuilderOfWeather.append("&" + URLEncoder.encode("base_time","UTF-8") + "=" + URLEncoder.encode(hourStr, "UTF-8")); /*06시 발표(정시단위) */
-            urlBuilderOfWeather.append("&" + URLEncoder.encode("nx","UTF-8") + "=" + URLEncoder.encode(nx, "UTF-8")); /*예보지점의 X 좌표값*/
-            urlBuilderOfWeather.append("&" + URLEncoder.encode("ny","UTF-8") + "=" + URLEncoder.encode(ny, "UTF-8")); /*예보지점의 Y 좌표값*/
+            log.info("weather 서비스 호출 >>> 서비스키 : {}, 연월일 : {}, 위도 : {}, 경도 : {}, 마지막 업데이트 시간 : {}", weatherApiServiceKey, yyyyMMdd, hourStr, nx, ny, currentChangeTime);
+            Weather weather = getWeatherService.fetchWeatherData(weatherApiServiceKey, yyyyMMdd, hourStr, nx, ny, currentChangeTime);
+            region.updateRegionWeather(weather); // 날씨 정보 업데이트
 
-            URL urlOfWeather = new URL(urlBuilderOfWeather.toString());
-            log.info("request url: {}", urlOfWeather);
+            log.info("dust 서비스 호출 >>> 서비스키 : {}, 구 이름 : {}", weatherApiServiceKey, district);
+            Dust dust = getDustService.fetchDustData(weatherApiServiceKey,district);
+            region.updateRegionDust(dust); // 미세먼지 정보 업데이트
 
-            HttpURLConnection conn = (HttpURLConnection) urlOfWeather.openConnection();
-            conn.setRequestMethod("GET");
-            conn.setRequestProperty("Content-type", "application/json");
-
-            BufferedReader rd;
-            if(conn.getResponseCode() >= 200 && conn.getResponseCode() <= 300) {
-                rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-            } else {
-                rd = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
-            }
-            StringBuilder sb = new StringBuilder();
-            String line;
-            while ((line = rd.readLine()) != null) {
-                sb.append(line);
-            }
-            rd.close();
-            conn.disconnect();
-            String data = sb.toString();
-
-            //// 응답 수신 완료 ////
-            //// 응답 결과를 JSON 파싱 ////
-
-            Double temp = null;
-            Double rainAmount = null;
-
-            try {
-                JSONObject jObject = new JSONObject(data);
-                log.info("jObject is : " + jObject);
-                JSONObject response = jObject.getJSONObject("response");
-                JSONObject body = response.getJSONObject("body");
-                JSONObject items = body.getJSONObject("items");
-                JSONArray jArray = items.getJSONArray("item");
-
-                for(int i = 0; i < jArray.length(); i++) {
-                    JSONObject obj = jArray.getJSONObject(i);
-                    String category = obj.getString("category");
-                    double obsrValue = obj.getDouble("obsrValue");
-
-                    switch (category) {
-                        case "T1H": // 기온
-                            temp = obsrValue;
-                            break;
-                        case "RN1": // 강수량
-                            rainAmount = obsrValue;
-                            break;
-                    }
-                }
-            } catch (JSONException e) {
-                log.error("날씨 정보 조회에 실패했습니다. 잠시 후 다시 시도해주세요");
-                return WeatherResponseDTO.builder().message("날씨 정보 조회에 실패했습니다. 잠시 후 다시 시도해주세요").build();
-            }
-
-            int pm10Value = 0, pm25Value = 0, pm10Grade = 0, pm25Grade = 0;
-            // 엑셀 파싱 구현 단계에서 임의로 만듦
-            // 추후 미세먼지 정보 조회 구현 단계에서 삭제 예정
-
-            // 새로 받아온 정보로 DB 업데이트
-            Weather weather = new Weather(temp, rainAmount, currentChangeTime);
-            region.updateRegionWeather(weather);
             return WeatherResponseDTO.builder()
                     .weather(weather)
+                    .dust(dust)
                     .message("OK").build();
-
         } catch (IOException e) {
             return WeatherResponseDTO.builder()
                     .weather(null)
+                    .dust(null)
                     .message("날씨 및 미세먼지 정보 조회에 실패했습니다. 잠시 후 다시 시도해주세요").build();
         }
     }
