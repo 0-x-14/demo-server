@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/test")
+@RequestMapping("/api/test2")
 public class TestController {
     // 배포 서버 체크용 코드 임의 추가
     @GetMapping("")
