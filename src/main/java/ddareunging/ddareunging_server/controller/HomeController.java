@@ -13,8 +13,14 @@ public class HomeController {
 
     private final HomeWeatherService homeWeatherService;
 
+//    @GetMapping("/weather")
+//    public ResponseEntity<WeatherResponseDTO> getWeatherOfRegion(@RequestParam("region-id") Long regionId) {
+//        return ResponseEntity.ok(homeWeatherService.getWeatherDataOfRegion(regionId));
+//    }
+
     @GetMapping("/weather")
-    public ResponseEntity<WeatherResponseDTO> getWeatherOfRegion(@RequestParam("region-id") Long regionId) {
-        return ResponseEntity.ok(homeWeatherService.getWeatherDataOfRegion(regionId));
+    public ResponseEntity<WeatherResponseDTO> getWeatherOfRegion(@RequestParam("lat") String latitude, @RequestParam("lon") String longitude) {
+        // 위도와 경도 값을 입력받도록 변경
+        return ResponseEntity.ok(homeWeatherService.getWeatherDataByCoordinates(latitude, longitude));
     }
 }
