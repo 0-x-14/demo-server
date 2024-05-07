@@ -21,6 +21,9 @@ spring:
 weatherApi:
   serviceKey: ${weather.servicekey}
 
+kakaoApi:
+  serviceKey: ${kakao.servicekey}
+
 resources:
   location: C:/Users/jooye/Ddareunging_Server/src/main/resources # 개발 환경
   real.properties: # 운영 환경 추가해야 함
