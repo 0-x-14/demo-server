@@ -19,7 +19,7 @@ public class HomeController {
 //    }
 
     @GetMapping("/weather")
-    public ResponseEntity<WeatherResponseDTO> getWeatherOfRegion(@RequestParam("lat") String latitude, @RequestParam("lon") String longitude) {
+    public ResponseEntity<WeatherResponseDTO> getWeatherOfRegion(@RequestParam("lat") String latitude, @RequestParam("lng") String longitude) {
         // 위도와 경도 값을 입력받도록 변경
         return ResponseEntity.ok(homeWeatherService.getWeatherDataByCoordinates(latitude, longitude));
     }
