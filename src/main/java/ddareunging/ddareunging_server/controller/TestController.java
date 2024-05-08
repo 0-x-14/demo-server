@@ -1,16 +1,19 @@
 package ddareunging.ddareunging_server.controller;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
-@RestController
-@RequiredArgsConstructor
-@RequestMapping("/api/test2")
+@CrossOrigin(origins = "http://localhost:3000")
+@Controller
 public class TestController {
-    // 배포 서버 체크용 코드 임의 추가
-    @GetMapping("")
+
+    @RequestMapping(value = "/test/hello")
     @ResponseBody
-    public String TestCode(@RequestParam("request") String request) {
-        return request;
+    public String helloRuckus(Model model) {
+        return "됐나?";
     }
+
 }
