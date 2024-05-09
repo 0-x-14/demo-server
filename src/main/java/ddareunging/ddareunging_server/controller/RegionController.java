@@ -34,6 +34,7 @@ public class RegionController {
 
     private final EntityManager em;
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/region")
     @Transactional
     public ResponseEntity<String> resetRegionList() {
