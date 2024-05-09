@@ -1,27 +1,22 @@
-#spring:
-#  thymeleaf:
-#    prefix: classpath:/templates/
-#    suffix: .html
-#    mode: HTML
-#    encoding: UTF-8
-#    cache: false
-#
-#kakaoApi:
-#  serviceKey: ${kakao.servicekey}
-#  redirect_uri: https://ddareunging.sepnon3.shop/callback
-
 spring:
-  application:
-    name: demo_server
   datasource:
-    url: jdbc:mysql://ddareunging-dev.cnqwttc2liwc.ap-northeast-2.rds.amazonaws.com:3306/ddareunging?useSSL=false&serverTimezone=UTC
-    username: root
-    password: cotato9thddareunging11!
+    url: ${db.url}
+    username: ${db.username}
+    password: ${db.password}
     driver-class-name: com.mysql.cj.jdbc.Driver
+  sql:
+    init:
+      mode:never
   jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        show_sql: true
+        format_sql: true
+        use_sql_comments: true
+        hbm2ddl:
+          auto: update
+        default_batch_fetch_size: 1000
   thymeleaf:
     prefix: classpath:/templates/
     suffix: .html
@@ -29,8 +24,13 @@ spring:
     encoding: UTF-8
     cache: false
 
+weatherApi:
+  serviceKey: ${weather.servicekey}
+
 kakaoApi:
   serviceKey: ${kakao.servicekey}
   redirect_uri: https://ddareunging.sepnon3.shop/callback
-  # redirect_uri: http://localhost:8080/callback
 
+resources:
+  location: C:/Users/jooye/Ddareunging-Server/src/main/resources # 개발 환경
+  real.properties: # 운영 환경 추가해야 함

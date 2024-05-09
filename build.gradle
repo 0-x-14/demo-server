@@ -16,52 +16,40 @@ repositories {
 }
 
 dependencies {
-	// compile('org.springframework.boot:spring-boot-starter-data-jpa')
-	// compile('mysql:mysql-connector-java')
+	// Spring Boot Starters
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'mysql:mysql-connector-java:8.0.22'
+	// Database
+	runtimeOnly 'com.mysql:mysql-connector-java:8.0.22'
 
-	// Lombok 라이브러리 추가
-	implementation 'org.projectlombok:lombok:1.18.20'
+	// OpenAPI Documentation
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
+	implementation 'org.springdoc:springdoc-openapi-ui:1.6.15'
+
+	// Swagger Integration (Deprecated)
+	implementation 'io.springfox:springfox-swagger2:2.9.2'
+	implementation 'io.springfox:springfox-swagger-ui:2.9.2'
+
+	// Lombok
+	compileOnly 'org.projectlombok:lombok:1.18.20'
 	annotationProcessor 'org.projectlombok:lombok:1.18.20'
-
-	// 테스트를 위한 Lombok 설정 (선택 사항)
 	testImplementation 'org.projectlombok:lombok:1.18.20'
 	testAnnotationProcessor 'org.projectlombok:lombok:1.18.20'
 
-	implementation 'org.springframework.boot:spring-boot-starter'
-	// runtimeOnly 'com.mysql:mysql-connector-j'
-
-	//implementation 'org.springframework.boot:spring-boot-starter-security'
-
-
-	// test
-//	implementation 'org.springframework.boot:spring-boot-starter-actuator'
-//	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-//	implementation 'org.springframework.boot:spring-boot-starter-web'
-//	compileOnly 'org.projectlombok:lombok'
-//	developmentOnly 'org.springframework.boot:spring-boot-devtools'
-//	runtimeOnly 'com.mysql:mysql-connector-j'
-//	annotationProcessor 'org.projectlombok:lombok'
-//	// providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
-//	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-//	implementation 'org.apache.httpcomponents:httpclient:4.5.13'
+	// Utilities
 	implementation 'com.google.code.gson:gson:2.8.9'
-//	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'commons-fileupload:commons-fileupload:1.4'
 	implementation 'commons-io:commons-io:2.11.0'
+	implementation group: 'org.json', name: 'json', version: '20231013'
 
+	// Servlet API
 	compileOnly 'javax.servlet:javax.servlet-api:4.0.1'
 
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-
-
-
-
+	// Development Tools
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 }
 
 tasks.named('test') {
@@ -71,3 +59,4 @@ tasks.named('test') {
 jar {
 	enabled = false
 }
+
