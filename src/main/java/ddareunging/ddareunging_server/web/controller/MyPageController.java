@@ -9,10 +9,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
+@RequestMapping("/mypage")
 public class MyPageController {
     @Autowired
     private UserService userService;
@@ -21,11 +23,11 @@ public class MyPageController {
     private UserRepository userRepository;
 
     // 회원 전용 마이페이지
-    @GetMapping("/mypage")
+    @GetMapping("")
     public String showMyPage(Model model, HttpSession session) {
         User user = (User) session.getAttribute("user");
         if (user == null) {
-            return "redirect:/login";
+            return "redirect:";
         }
         model.addAttribute("user", user);
         return "mypage";
@@ -39,7 +41,7 @@ public class MyPageController {
         User user = (User) session.getAttribute("user");
         if (user == null) {
             redirectAttributes.addFlashAttribute("error", "Session expired. Please log in again.");
-            return "redirect:/login";
+            return "redirect:";
         }
 
 
@@ -61,11 +63,12 @@ public class MyPageController {
     public String showUpdateInfo(Model model, HttpSession session) {
         User user = (User) session.getAttribute("user");
         if (user == null) {
-            return "redirect:/login";
+            return "redirect:";
         }
         model.addAttribute("user", user);
-        return "updateInfo";  // 정보를 업데이트하는 뷰로 리다이렉트
+        return "mypage-updateInfo";  // 정보를 업데이트하는 뷰로 리다이렉트
     }
+
 
 
 }

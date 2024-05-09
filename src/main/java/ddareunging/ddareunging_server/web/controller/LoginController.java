@@ -53,7 +53,7 @@ public class LoginController {
                 User newUser = userService.saveUser(userInfo); // 새로운 사용자 저장
                 session.setAttribute("user", newUser);
                 model.addAttribute("user", newUser);
-                return "userInfo"; // 새로운 회원이면 userInfo 화면으로
+                return "userinfo"; // 새로운 회원이면 userInfo 화면으로
             }
         } catch (IOException e) {
             log.error("Error during the authentication process: " + e.getMessage());
@@ -66,8 +66,8 @@ public class LoginController {
     public String logout(HttpSession session) {
         String accessToken = (String) session.getAttribute("kakaoToken");
         String clientId = client_id;  // 카카오 앱 키를 여기에 입력
-        String redirectUri = "https://ddareunging.sepnon3.shop/login/page";  // 로그아웃 후 리다이렉트될 URI
-        //String redirectUri = "http://localhost:8080/login/page";
+        String redirectUri = "https://ddareunging.sepnon3.shop";  // 로그아웃 후 리다이렉트될 URI
+        // String redirectUri = "http://localhost:8080";
 
         if (accessToken != null && !accessToken.isEmpty()) {
             try {

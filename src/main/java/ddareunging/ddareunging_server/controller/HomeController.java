@@ -1,5 +1,6 @@
 package ddareunging.ddareunging_server.controller;
 
+import ddareunging.ddareunging_server.domain.User;
 import ddareunging.ddareunging_server.dto.WeatherResponseDTO;
 import ddareunging.ddareunging_server.service.HomeWeatherService;
 import lombok.RequiredArgsConstructor;

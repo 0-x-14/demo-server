@@ -8,7 +8,7 @@
 <body>
 <div class="container mt-5">
     <h2>Update Your Information</h2>
-    <form th:action="@{/updateMyPage}" method="post" enctype="multipart/form-data">
+    <form th:action="@{/mypage/updateMyPage}" method="post" enctype="multipart/form-data">
         <div class="form-group">
             <label for="nickname">Nickname</label>
             <input type="text" class="form-control" id="nickname" name="nickname" th:value="${user.nickname}" placeholder="Enter new nickname"/>

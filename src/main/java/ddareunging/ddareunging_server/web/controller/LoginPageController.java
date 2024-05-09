@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 
 @Controller
-@RequestMapping("/login")
+@RequestMapping("")
 public class LoginPageController {
 
     @Value("${kakaoApi.serviceKey}")
@@ -17,7 +17,7 @@ public class LoginPageController {
     @Value("${kakaoApi.redirect_uri}")
     private String redirect_uri;
 
-    @GetMapping("/page")
+    @GetMapping("")
     public String loginPage(Model model) {
         String location = "https://kauth.kakao.com/oauth/authorize?response_type=code&client_id="+client_id+"&redirect_uri="+redirect_uri;
         model.addAttribute("location", location);

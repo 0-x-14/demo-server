@@ -44,6 +44,7 @@ dependencies {
 	implementation 'commons-fileupload:commons-fileupload:1.4'
 	implementation 'commons-io:commons-io:2.11.0'
 	implementation group: 'org.json', name: 'json', version: '20231013'
+	implementation 'mysql:mysql-connector-java:8.0.22'
 
 	// Servlet API
 	compileOnly 'javax.servlet:javax.servlet-api:4.0.1'
