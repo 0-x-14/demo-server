@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>User Profile</title>
+</head>
+<body>
+<h1>User Profile</h1>
+<form th:action="@{/updateMyPage}" method="post" enctype="multipart/form-data">
+    <div>
+        <label>Nickname:</label>
+        <input type="text" name="nickname" value="" placeholder="Enter new nickname"/>
+    </div>
+<!--    <div>-->
+<!--        <label>Profile Image:</label>-->
+<!--        <input type="file" name="profileImage"/>-->
+<!--    </div>-->
+    <div>
+        <button type="submit">Update Profile</button>
+    </div>
+</form>
+</body>
+</html>

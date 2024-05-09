@@ -4,10 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class DdaeungingServerApplication {
+public class DdareungingServerApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(DdaeungingServerApplication.class, args);
+		SpringApplication.run(DdareungingServerApplication.class, args);
 	}
 
 }
