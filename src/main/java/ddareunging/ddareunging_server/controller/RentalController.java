@@ -25,7 +25,7 @@ import static org.apache.commons.lang3.StringUtils.length;
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api")
+@RequestMapping("/poi")
 public class RentalController {
 
     @Value("${resources.location}")
