@@ -17,12 +17,19 @@ spring:
         hbm2ddl:
           auto: update
         default_batch_fetch_size: 1000
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+    mode: HTML
+    encoding: UTF-8
+    cache: false
 
 weatherApi:
   serviceKey: ${weather.servicekey}
 
 kakaoApi:
   serviceKey: ${kakao.servicekey}
+  redirect_uri: https://ddareunging.sepnon3.shop/callback
 
 resources:
   location: C:/Users/jooye/Ddareunging-Server/src/main/resources # 개발 환경
