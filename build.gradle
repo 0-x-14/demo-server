@@ -3,24 +3,38 @@ plugins {
 	id 'org.springframework.boot' version '3.2.5'
 	id 'io.spring.dependency-management' version '1.1.4'
 }
-
 group = 'demo'
 version = '0.0.1-SNAPSHOT'
-
 java {
 	sourceCompatibility = '17'
 }
-
 repositories {
 	mavenCentral()
 }
 
 dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
+	implementation 'org.springdoc:springdoc-openapi-ui:1.6.15'
+	implementation 'io.springfox:springfox-swagger2:2.9.2'
+	implementation 'io.springfox:springfox-swagger-ui:2.9.2'
+	compileOnly 'org.projectlombok:lombok'
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	runtimeOnly 'com.mysql:mysql-connector-j'
+	annotationProcessor 'org.projectlombok:lombok'
+	implementation group: 'org.json', name: 'json', version: '20231013'
+	implementation 'com.google.code.gson:gson:2.8.9'
+	implementation 'commons-fileupload:commons-fileupload:1.4'
+	implementation 'commons-io:commons-io:2.11.0'
+	compileOnly 'javax.servlet:javax.servlet-api:4.0.1'
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+jar {
+	enabled = false
 }

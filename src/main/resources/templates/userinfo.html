@@ -1,0 +1,69 @@
+<!--기존 코드-->
+<!--<!DOCTYPE html>-->
+<!--<html xmlns:th="http://www.thymeleaf.org">-->
+<!--<head>-->
+<!--    <title>User Profile</title>-->
+<!--</head>-->
+<!--<body>-->
+<!--<h1>User Profile</h1>-->
+<!--<div>-->
+<!--    <p>ID: <span th:text="${user.user_id}"></span></p>-->
+<!--    <p>Name: <span th:text="${user.user_name}"></span></p>-->
+<!--    <p>Nickname: <span th:text="${user.nickname}"></span></p>-->
+<!--    <p>Email: <span th:text="${user.email}"></span></p>-->
+<!--&lt;!&ndash;    <p>Profile Image: <img th:src="@{${user.profile_image}}" style="width: 150px; height: 150px;" /></p>&ndash;&gt;-->
+<!--&lt;!&ndash;    <p>Profile Image: <img th:src="@{/user-profile-photos/${user.profile_image}}" style="width: 150px; height: 150px;" /></p>&ndash;&gt;-->
+<!--&lt;!&ndash;    <p>Profile Image: <img th:src="${user.profile_image}" style="width: 150px; height: 150px;" /></p>&ndash;&gt;-->
+<!--&lt;!&ndash;    <p>Profile Image: <img th:src="@{user-profile-photos/{userId}/{filename}(userId=${user.user_id}, filename=${user.profile_image})}" style="width: 150px; height: 150px;" />&ndash;&gt;-->
+<!--&lt;!&ndash;    </p>&ndash;&gt;-->
+<!--        <p>Profile Image: <img th:src="@{'/user-profile-photos.' + ${user.user_id} + '/' + ${user.profile_image}}" style="width: 150px; height: 150px;" />-->
+<!--        </p>-->
+<!--    -->
+<!--</div>-->
+
+<!--<form action="/updateProfile" method="post" enctype="multipart/form-data">-->
+<!--    <label for="nickname">New Nickname:</label>-->
+<!--    <input type="text" id="nickname" name="nickname" placeholder="Enter new nickname" required>-->
+<!--    <label for="profileImage">New Profile Image:</label>-->
+<!--    <input type="file" id="profileImage" name="profileImage" accept="image/*">-->
+<!--    <button type="submit">Update Profile</button>-->
+<!--</form>-->
+
+<!--</body>-->
+<!--</html>-->
+
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>User Profile</title>
+</head>
+<body>
+<h1>User Profile</h1>
+<div>
+    <p>ID: <span th:text="${user.user_id}"></span></p>
+    <p>Name: <span th:text="${user.user_name}"></span></p>
+    <p>Nickname: <span th:text="${user.nickname}"></span></p>
+    <p>Email: <span th:text="${user.email}"></span></p>
+    <p>Profile Image: <img th:src="${user.profile_image}" style="width: 150px; height: 150px;" />
+    </p>
+
+</div>
+
+<form action="/signup" method="post" enctype="multipart/form-data">
+    <label for="nickname">New Nickname:</label>
+    <input type="text" id="nickname" name="nickname" placeholder="Enter new nickname" required>
+<!--    <label for="profileImage">New Profile Image:</label>-->
+<!--    <input type="file" id="profileImage" name="profileImage" accept="image/*">-->
+    <button type="submit">Update Profile</button>
+</form>
+
+<!-- 로그아웃 버튼 -->
+<a href="/logout" style="text-decoration: none; color: white; background-color: red; padding: 10px 20px; border-radius: 5px; display: inline-block; margin-top: 20px;">Logout</a>
+
+</body>
+</html>
+
+
+
+

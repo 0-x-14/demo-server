@@ -1,0 +1,30 @@
+<!-- mypage.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>My Page</title>
+</head>
+<body>
+<div>
+<h1>My Page</h1>
+<p>Welcome, <span th:text="${user.nickname}">Nickname</span>!</p>
+
+<div>
+    <p>Name: <span th:text="${user.user_name}"></span></p>
+    <p>Nickname: <span th:text="${user.nickname}"></span></p>
+    <p>Email: <span th:text="${user.email}"></span></p>
+    <p>Profile Image: <img th:src="${user.profile_image}" style="width: 150px; height: 150px;" />
+    </p>
+<!--    <p>Profile Image: <img th:src="@{'/user-profile-photos/' + ${user.user_id} + '/' + ${user.profile_image}}" style="width: 150px; height: 150px;" />-->
+<!--    </p>-->
+</div>
+    <button th:onclick="|location.href='@{/mypage/updateInfo}'|" type="button">내 정보 관리</button>
+
+</div>
+
+
+</body>
+</html>
+
+

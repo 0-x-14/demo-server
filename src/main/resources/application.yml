@@ -1,0 +1,47 @@
+spring:
+  datasource:
+    url: ${db.url}
+    username: ${db.username}
+    password: ${db.password}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  sql:
+    init:
+      mode:never
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        show_sql: true
+        format_sql: true
+        use_sql_comments: true
+        hbm2ddl:
+          auto: update
+        default_batch_fetch_size: 1000
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+    mode: HTML
+    encoding: UTF-8
+    cache: false
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
+weatherApi:
+  serviceKey: ${weather.servicekey}
+
+kakaoApi:
+  serviceKey: ${kakao.servicekey}
+  redirect_uri: https://ddareunging.sepnon3.shop/callback
+  # redirect_uri: http://localhost:8080/callback
+
+resources:
+  location: C:/Users/jooye/Ddareunging-Server/src/main/resources # 개발 환경
+  real.properties: # 운영 환경 추가해야 함
+
+tmap:
+  api-key: ${tmap.apikey} #"tPLkF7VZBwIZSU1lW8N03zbLJTwYAGG3sEzLOQE6"
+
+#  REACT_APP_TMAP_API_KEY=tPLkF7VZBwIZSU1lW8N03zbLJTwYAGG3sEzLOQE6
+#  REACT_APP_KAKAO_REST_API_KEY=282f0bcb67baf674c825363575205734
+#  REACT_APP_KAKAO_REDIRECT_URI=http://localhost:3000/callback

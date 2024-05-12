@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Update Info</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-5">
+    <h2>Update Your Information</h2>
+    <form th:action="@{/mypage/updateMyPage}" method="post" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="nickname">Nickname</label>
+            <input type="text" class="form-control" id="nickname" name="nickname" th:value="${user.nickname}" placeholder="Enter new nickname"/>
+        </div>
+<!--        <div class="form-group">-->
+<!--            <label for="profileImage">Profile Image</label>-->
+<!--            <input type="file" class="form-control-file" id="profileImage" name="profileImage"/>-->
+<!--        </div>-->
+        <button type="submit" class="btn btn-primary">Update Profile</button>
+    </form>
+</div>
+</body>
+</html>
