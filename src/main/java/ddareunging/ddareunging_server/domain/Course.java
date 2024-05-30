@@ -23,7 +23,7 @@ public class Course extends BaseEntity {
     private Integer theme;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "userId", referencedColumnName = "userId")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private User user;
 

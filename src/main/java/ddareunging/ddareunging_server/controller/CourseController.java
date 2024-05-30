@@ -1,6 +1,7 @@
 package ddareunging.ddareunging_server.controller;
 
 import ddareunging.ddareunging_server.dto.FindCoursesResponseDTO;
+import ddareunging.ddareunging_server.dto.FindMyCoursesResponseDTO;
 import ddareunging.ddareunging_server.service.CourseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,5 +20,11 @@ public class CourseController {
     @GetMapping("")
     public ResponseEntity<FindCoursesResponseDTO> getCoursesByTheme(@RequestParam("theme-number") Integer theme) {
         return ResponseEntity.ok(courseService.getCoursesByTheme(theme));
+    }
+    // 테마에 따른 조회
+
+    @GetMapping("/mycourse")
+    public ResponseEntity<FindMyCoursesResponseDTO> getCoursesByUser(@RequestParam("user-id") Long userId) {
+        return ResponseEntity.ok(courseService.getCoursesByUser(userId));
     }
 }
