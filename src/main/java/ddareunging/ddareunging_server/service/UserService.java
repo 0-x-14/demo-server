@@ -24,7 +24,7 @@ public class UserService {
     public User saveUser(HashMap<String, Object> userInfo) {
         User user = new User();
 
-        user.setUser_id(Long.parseLong(userInfo.get("id").toString()));
+        user.setUserId(Long.parseLong(userInfo.get("id").toString()));
         user.setUser_name(userInfo.get("name").toString());
         user.setEmail(userInfo.get("email").toString());
         user.setProfile_image(userInfo.get("profileImage").toString());
