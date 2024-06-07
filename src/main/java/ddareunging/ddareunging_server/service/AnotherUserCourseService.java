@@ -36,7 +36,7 @@ public class AnotherUserCourseService {
                 return FindAnotherUserCoursesReponseDTO.builder()
                         .user(null)
                         .courses(new ArrayList<>())
-                        .message("사용자 조회 과정에서 오류가 발생하였습니다").build();
+                        .message("존재하지 않는 사용자입니다").build();
             }
 
             List<Course> courses = courseRepository.findCoursesByUserUserId(userId);

@@ -1,6 +1,5 @@
 package ddareunging.ddareunging_server.dto;
 
-import ddareunging.ddareunging_server.domain.Course;
 import ddareunging.ddareunging_server.domain.User;
 import lombok.Builder;
 
