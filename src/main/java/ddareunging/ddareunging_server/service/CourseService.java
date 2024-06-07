@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Transactional
@@ -44,7 +45,15 @@ public class CourseService {
     public FindMyCoursesResponseDTO getCoursesByUser(Long userId) {
         // 나만의 코스 조회
 
-        List<Course> courses = courseRepository.findByUserUserId(userId);
+        List<Course> courses = courseRepository.findCoursesByUserUserId(userId);
+
+        if (courses.isEmpty()) {
+            // 비어 있는 경우, 응답 DTO에 메시지만 설정하여 반환
+            return FindMyCoursesResponseDTO.builder()
+                    .userId(userId)
+                    .courses(new ArrayList<>()) // 비어있는 list 반환
+                    .message("나만의 코스 만들기").build();
+        } // 조회된 코스가 없는 경우
 
         courses.forEach(course -> {
             User user = course.getUser();
@@ -56,6 +65,7 @@ public class CourseService {
 
         return FindMyCoursesResponseDTO.builder()
                 .userId(userId)
-                .courses(courses).build();
+                .courses(courses)
+                .message("나만의 코스가 정상적으로 조회되었습니다.").build();
     }
 }

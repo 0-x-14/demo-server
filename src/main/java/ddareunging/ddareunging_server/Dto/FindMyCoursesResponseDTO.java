@@ -6,5 +6,5 @@ import lombok.Builder;
 import java.util.List;
 
 @Builder
-public record FindMyCoursesResponseDTO(Long userId, List<Course> courses) {
+public record FindMyCoursesResponseDTO(Long userId, List<Course> courses, String message) {
 }
