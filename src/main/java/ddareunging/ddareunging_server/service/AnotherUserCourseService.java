@@ -2,8 +2,8 @@ package ddareunging.ddareunging_server.service;
 
 import ddareunging.ddareunging_server.domain.Course;
 import ddareunging.ddareunging_server.domain.User;
+import ddareunging.ddareunging_server.dto.CourseDTO;
 import ddareunging.ddareunging_server.dto.FindAnotherUserCoursesReponseDTO;
-import ddareunging.ddareunging_server.dto.FindMyCoursesResponseDTO;
 import ddareunging.ddareunging_server.repository.CourseRepository;
 import ddareunging.ddareunging_server.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Transactional
 @Service
@@ -41,17 +42,16 @@ public class AnotherUserCourseService {
         } // 조회된 코스가 없는 경우
         // 댓글창에서 사용자를 누를 경우, 제작한 코스가 없는 경우도 있을 것이라고 판단해서 추가하였음
 
-        courses.forEach(course -> {
-            User user = course.getUser();
-            if (user != null) {
-                // User 엔티티를 명시적으로 초기화하여 nickname을 가져옴
-                course.setUserNickname(user.getNickname());
-            }
-        });
+        List<CourseDTO> coursesDTO = courses.stream()
+                .map(course -> {
+                    String userNickname = course.getUser().getNickname();
+                    return new CourseDTO(course.getCourseId(), course.getCourseName(), course.getCourseImage(), course.getCourseLike(), course.getTheme(), userNickname);
+                })
+                .collect(Collectors.toList());
 
         return FindAnotherUserCoursesReponseDTO.builder()
                 .user(anotherUser)
-                .courses(courses)
+                .courses(coursesDTO)
                 .message("사용자 코스 조회 성공").build();
     }
 }

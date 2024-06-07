@@ -35,17 +35,17 @@ public class CourseService {
 
         List<Course> courses = courseRepository.findCoursesByTheme(theme);
 
-        courses.forEach(course -> {
-            User user = course.getUser();
-            if (user != null) {
-                // User 엔티티를 명시적으로 초기화하여 nickname을 가져옴
-                course.setUserNickname(user.getNickname());
-            }
-        });
+        List<CourseDTO> coursesDTO = courses.stream()
+                .map(course -> {
+                    String userNickname = course.getUser().getNickname();
+                    return new CourseDTO(course.getCourseId(), course.getCourseName(), course.getCourseImage(), course.getCourseLike(), course.getTheme(), userNickname);
+                })
+                .collect(Collectors.toList());
 
         return FindCoursesResponseDTO.builder()
                 .theme(theme)
-                .courses(courses).build();
+                .courses(coursesDTO)
+                .message("테마별 코스가 정상적으로 조회되었습니다.").build();
     }
 
     @Transactional
@@ -62,17 +62,16 @@ public class CourseService {
                     .message("나만의 코스 만들기").build();
         } // 조회된 코스가 없는 경우
 
-        courses.forEach(course -> {
-            User user = course.getUser();
-            if (user != null) {
-                // User 엔티티를 명시적으로 초기화하여 nickname을 가져옴
-                course.setUserNickname(user.getNickname());
-            }
-        });
+        List<CourseDTO> myCoursesDTO = courses.stream()
+                .map(course -> {
+                    String userNickname = course.getUser().getNickname();
+                    return new CourseDTO(course.getCourseId(), course.getCourseName(), course.getCourseImage(), course.getCourseLike(), course.getTheme(), userNickname);
+                })
+                .collect(Collectors.toList());
 
         return FindMyCoursesResponseDTO.builder()
                 .userId(userId)
-                .courses(courses)
+                .courses(myCoursesDTO)
                 .message("나만의 코스가 정상적으로 조회되었습니다.").build();
     }
 
@@ -90,7 +89,7 @@ public class CourseService {
                     .message("찜한 코스가 없습니다.").build();
         } // 조회된 코스가 없는 경우
 
-        List<CourseDTO> likedCoursesDTOs = likes.stream()
+        List<CourseDTO> likedCoursesDTO = likes.stream()
                 .map(like -> {
                     Course course = like.getCourse();
                     String userNickname = course.getUser().getNickname(); // 해당 course가 참조하는 user의 nickname, 즉 코스를 만든 사람의 닉네임을 가져옴
@@ -98,17 +97,9 @@ public class CourseService {
                 })
                 .collect(Collectors.toList());
 
-        likes.forEach(like -> {
-            User user = like.getUser();
-            if (user != null) {
-                // User 엔티티를 명시적으로 초기화하여 nickname을 가져옴
-                like.setUserNickname(user.getNickname());
-            }
-        });
-
         return FindMyLikedCoursesResponseDTO.builder()
                 .userId(userId)
-                .courses(likedCoursesDTOs)
+                .courses(likedCoursesDTO)
                 .message("찜한 코스가 정상적으로 조회되었습니다.").build();
 
         // 다른 코스 조회 API들처럼 courses(courses)로 처리할 경우 HttpMessageConversionException 문제가 발생하므로 DTO를 만들어서 처리했음
