@@ -28,30 +28,45 @@ public class AnotherUserCourseService {
 
     @Transactional
     public FindAnotherUserCoursesReponseDTO getCoursesByAnotherUser(Long userId) {
-        // 다른 사용자의 코스 조회
+        try {
+            // 다른 사용자의 코스 조회
+            User anotherUser = userRepository.findUserByUserId(userId);
+            if (anotherUser == null) {
+                // 사용자를 찾을 수 없는 경우
+                return FindAnotherUserCoursesReponseDTO.builder()
+                        .user(null)
+                        .courses(new ArrayList<>())
+                        .message("사용자 조회 과정에서 오류가 발생하였습니다").build();
+            }
 
-        User anotherUser = userRepository.findUserByUserId(userId);
-        List<Course> courses = courseRepository.findCoursesByUserUserId(userId);
+            List<Course> courses = courseRepository.findCoursesByUserUserId(userId);
 
-        if (courses.isEmpty()) {
-            // 비어 있는 경우, 응답 DTO에 메시지만 설정하여 반환
+            if (courses.isEmpty()) {
+                // 비어 있는 경우, 응답 DTO에 메시지만 설정하여 반환
+                return FindAnotherUserCoursesReponseDTO.builder()
+                        .user(anotherUser)
+                        .courses(new ArrayList<>()) // 비어있는 list 반환
+                        .message("아직 코스를 만들지 않은 사용자입니다!").build();
+            } // 조회된 코스가 없는 경우
+            // 댓글창에서 사용자를 누를 경우, 제작한 코스가 없는 경우도 있을 것이라고 판단해서 추가하였음
+
+            List<CourseDTO> coursesDTO = courses.stream()
+                    .map(course -> {
+                        String userNickname = course.getUser().getNickname();
+                        return new CourseDTO(course.getCourseId(), course.getCourseName(), course.getCourseImage(), course.getCourseLike(), course.getTheme(), userNickname);
+                    })
+                    .collect(Collectors.toList());
+
             return FindAnotherUserCoursesReponseDTO.builder()
                     .user(anotherUser)
-                    .courses(new ArrayList<>()) // 비어있는 list 반환
-                    .message("아직 코스를 만들지 않은 사용자입니다!").build();
-        } // 조회된 코스가 없는 경우
-        // 댓글창에서 사용자를 누를 경우, 제작한 코스가 없는 경우도 있을 것이라고 판단해서 추가하였음
-
-        List<CourseDTO> coursesDTO = courses.stream()
-                .map(course -> {
-                    String userNickname = course.getUser().getNickname();
-                    return new CourseDTO(course.getCourseId(), course.getCourseName(), course.getCourseImage(), course.getCourseLike(), course.getTheme(), userNickname);
-                })
-                .collect(Collectors.toList());
-
-        return FindAnotherUserCoursesReponseDTO.builder()
-                .user(anotherUser)
-                .courses(coursesDTO)
-                .message("사용자 코스 조회 성공").build();
+                    .courses(coursesDTO)
+                    .message("사용자 코스 조회 성공").build();
+        } catch (Exception e) {
+            // 예외 처리
+            return FindAnotherUserCoursesReponseDTO.builder()
+                    .user(null)
+                    .courses(new ArrayList<>())
+                    .message("사용자 코스 조회 중 오류가 발생했습니다.: " + e.getMessage()).build();
+        }
     }
 }

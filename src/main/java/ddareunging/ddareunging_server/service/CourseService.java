@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,77 +32,98 @@ public class CourseService {
 
     @Transactional
     public FindCoursesResponseDTO getCoursesByTheme(Integer theme) {
-        // 테마로 코스 조회
+        try {
+            // 테마로 코스 조회
+            List<Course> courses = courseRepository.findCoursesByTheme(theme);
 
-        List<Course> courses = courseRepository.findCoursesByTheme(theme);
+            List<CourseDTO> coursesDTO = courses.stream()
+                    .map(course -> {
+                        String userNickname = course.getUser().getNickname();
+                        return new CourseDTO(course.getCourseId(), course.getCourseName(), course.getCourseImage(), course.getCourseLike(), course.getTheme(), userNickname);
+                    })
+                    .collect(Collectors.toList());
 
-        List<CourseDTO> coursesDTO = courses.stream()
-                .map(course -> {
-                    String userNickname = course.getUser().getNickname();
-                    return new CourseDTO(course.getCourseId(), course.getCourseName(), course.getCourseImage(), course.getCourseLike(), course.getTheme(), userNickname);
-                })
-                .collect(Collectors.toList());
-
-        return FindCoursesResponseDTO.builder()
-                .theme(theme)
-                .courses(coursesDTO)
-                .message("테마별 코스가 정상적으로 조회되었습니다.").build();
+            return FindCoursesResponseDTO.builder()
+                    .theme(theme)
+                    .courses(coursesDTO)
+                    .message("테마별 코스가 정상적으로 조회되었습니다.").build();
+        } catch (Exception e) {
+            // 예외 처리
+            return FindCoursesResponseDTO.builder()
+                    .theme(theme)
+                    .courses(Collections.emptyList()) // 비어 있는 리스트 반환
+                    .message("테마별 코스 조회 중 오류가 발생했습니다.: " + e.getMessage()).build();
+        }
     }
 
     @Transactional
     public FindMyCoursesResponseDTO getCoursesByUser(Long userId) {
-        // 나만의 코스 조회
+        try {
+            // 나만의 코스 조회
 
-        List<Course> courses = courseRepository.findCoursesByUserUserId(userId);
+            List<Course> courses = courseRepository.findCoursesByUserUserId(userId);
 
-        if (courses.isEmpty()) {
-            // 비어 있는 경우, 응답 DTO에 메시지만 설정하여 반환
+            if (courses.isEmpty()) {
+                // 비어 있는 경우, 응답 DTO에 메시지만 설정하여 반환
+                return FindMyCoursesResponseDTO.builder()
+                        .userId(userId)
+                        .courses(new ArrayList<>()) // 비어있는 list 반환
+                        .message("나만의 코스 만들기").build();
+            } // 조회된 코스가 없는 경우
+
+            List<CourseDTO> myCoursesDTO = courses.stream()
+                    .map(course -> {
+                        String userNickname = course.getUser().getNickname();
+                        return new CourseDTO(course.getCourseId(), course.getCourseName(), course.getCourseImage(), course.getCourseLike(), course.getTheme(), userNickname);
+                    })
+                    .collect(Collectors.toList());
+
             return FindMyCoursesResponseDTO.builder()
                     .userId(userId)
-                    .courses(new ArrayList<>()) // 비어있는 list 반환
-                    .message("나만의 코스 만들기").build();
-        } // 조회된 코스가 없는 경우
-
-        List<CourseDTO> myCoursesDTO = courses.stream()
-                .map(course -> {
-                    String userNickname = course.getUser().getNickname();
-                    return new CourseDTO(course.getCourseId(), course.getCourseName(), course.getCourseImage(), course.getCourseLike(), course.getTheme(), userNickname);
-                })
-                .collect(Collectors.toList());
-
-        return FindMyCoursesResponseDTO.builder()
-                .userId(userId)
-                .courses(myCoursesDTO)
-                .message("나만의 코스가 정상적으로 조회되었습니다.").build();
+                    .courses(myCoursesDTO)
+                    .message("나만의 코스가 정상적으로 조회되었습니다.").build();
+        } catch (Exception e) {
+            // 예외 처리
+            return FindMyCoursesResponseDTO.builder()
+                    .userId(userId)
+                    .courses(new ArrayList<>()) // 비어있는 list로 초기화
+                    .message("나만의 코스 조회 중 오류가 발생했습니다.: " + e.getMessage()).build();
+        }
     }
 
     @Transactional
     public FindMyLikedCoursesResponseDTO getLikedCoursesByUser(Long userId) {
-        // 내가 찜한 코스 조회
+        try {
+            // 내가 찜한 코스 조회
 
-        List<Like> likes = likeRepository.findLikeByUserId(userId);
+            List<Like> likes = likeRepository.findLikeByUserId(userId);
 
-        if (likes.isEmpty()) {
-            // 비어 있는 경우, 응답 DTO에 메시지만 설정하여 반환
+            if (likes.isEmpty()) {
+                // 비어 있는 경우, 응답 DTO에 메시지만 설정하여 반환
+                return FindMyLikedCoursesResponseDTO.builder()
+                        .userId(userId)
+                        .courses(new ArrayList<>()) // 비어있는 list 반환
+                        .message("찜한 코스가 없습니다.").build();
+            } // 조회된 코스가 없는 경우
+
+            List<CourseDTO> likedCoursesDTO = likes.stream()
+                    .map(like -> {
+                        Course course = like.getCourse();
+                        String userNickname = course.getUser().getNickname(); // 해당 course가 참조하는 user의 nickname, 즉 코스를 만든 사람의 닉네임을 가져옴
+                        return new CourseDTO(course.getCourseId(), course.getCourseName(), course.getCourseImage(), course.getCourseLike(), course.getTheme(), userNickname);
+                    })
+                    .collect(Collectors.toList());
+
             return FindMyLikedCoursesResponseDTO.builder()
                     .userId(userId)
-                    .courses(new ArrayList<>()) // 비어있는 list 반환
-                    .message("찜한 코스가 없습니다.").build();
-        } // 조회된 코스가 없는 경우
-
-        List<CourseDTO> likedCoursesDTO = likes.stream()
-                .map(like -> {
-                    Course course = like.getCourse();
-                    String userNickname = course.getUser().getNickname(); // 해당 course가 참조하는 user의 nickname, 즉 코스를 만든 사람의 닉네임을 가져옴
-                    return new CourseDTO(course.getCourseId(), course.getCourseName(), course.getCourseImage(), course.getCourseLike(), course.getTheme(), userNickname);
-                })
-                .collect(Collectors.toList());
-
-        return FindMyLikedCoursesResponseDTO.builder()
-                .userId(userId)
-                .courses(likedCoursesDTO)
-                .message("찜한 코스가 정상적으로 조회되었습니다.").build();
-
-        // 다른 코스 조회 API들처럼 courses(courses)로 처리할 경우 HttpMessageConversionException 문제가 발생하므로 DTO를 만들어서 처리했음
+                    .courses(likedCoursesDTO)
+                    .message("찜한 코스가 정상적으로 조회되었습니다.").build();
+        } catch (Exception e) {
+            // 예외 처리
+            return FindMyLikedCoursesResponseDTO.builder()
+                    .userId(userId)
+                    .courses(new ArrayList<>()) // 비어있는 list로 초기화
+                    .message("찜한 코스 조회 중 오류가 발생했습니다.: " + e.getMessage()).build();
+        }
     }
 }
