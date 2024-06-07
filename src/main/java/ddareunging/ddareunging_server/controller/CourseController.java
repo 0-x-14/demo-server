@@ -3,6 +3,7 @@ package ddareunging.ddareunging_server.controller;
 import ddareunging.ddareunging_server.dto.FindAnotherUserCoursesReponseDTO;
 import ddareunging.ddareunging_server.dto.FindCoursesResponseDTO;
 import ddareunging.ddareunging_server.dto.FindMyCoursesResponseDTO;
+import ddareunging.ddareunging_server.dto.FindMyLikedCoursesResponseDTO;
 import ddareunging.ddareunging_server.service.AnotherUserCourseService;
 import ddareunging.ddareunging_server.service.CourseService;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +32,12 @@ public class CourseController {
         return ResponseEntity.ok(courseService.getCoursesByUser(userId));
     }
     // 나만의 코스 조회
+
+    @GetMapping("/likedcourse")
+    public ResponseEntity<FindMyLikedCoursesResponseDTO> getLikedCoursesByUser(@RequestParam("user-id") Long userId) {
+        return ResponseEntity.ok(courseService.getLikedCoursesByUser(userId));
+    }
+    // 내가 찜한 코스 조회
 
     @GetMapping("/usercourse")
     public ResponseEntity<FindAnotherUserCoursesReponseDTO> getCoursesByAnotherUser(@RequestParam("user-id") Long userId) {
