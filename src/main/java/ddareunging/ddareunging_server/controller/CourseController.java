@@ -1,9 +1,6 @@
 package ddareunging.ddareunging_server.controller;
 
-import ddareunging.ddareunging_server.dto.FindAnotherUserCoursesReponseDTO;
-import ddareunging.ddareunging_server.dto.FindCoursesResponseDTO;
-import ddareunging.ddareunging_server.dto.FindMyCoursesResponseDTO;
-import ddareunging.ddareunging_server.dto.FindMyLikedCoursesResponseDTO;
+import ddareunging.ddareunging_server.dto.*;
 import ddareunging.ddareunging_server.service.AnotherUserCourseService;
 import ddareunging.ddareunging_server.service.CourseService;
 import lombok.RequiredArgsConstructor;
@@ -45,7 +42,7 @@ public class CourseController {
         } catch (Exception e) {
             // 예외 처리
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                        .body("찜한 코스 삭제 중 오류가 발생했습니다.: " + e.getMessage());
+                    .body("찜한 코스 삭제 중 오류가 발생했습니다.: " + e.getMessage());
         }
     }
     // 찜한 코스 삭제
@@ -56,4 +53,19 @@ public class CourseController {
     }
     // 사용자별 코스 조회 (다른 사용자의 프로필을 눌러서 해당 사용자가 제작한 코스를 조회하는 API
     // 이전의 mycourse와는 달리 조회하는 사용자의 정보도 같이 반환해야 함
+
+    @PostMapping("/makecourse")
+    public ResponseEntity<?> postNewCourse(@RequestParam("user-id") Long userId, @RequestBody RegisterNewCourseRequestDTO course) {
+        try {
+            RegisterNewCourseResponseDTO responseDTO = courseService.postNewCourse(userId, course);
+            return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
+        } catch (IllegalArgumentException e) {
+            // 잘못된 인자가 전달되었을 때의 처리
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("잘못된 요청입니다: " + e.getMessage());
+        } catch (Exception e) {
+            // 예외 처리
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("코스 제작 중 오류가 발생했습니다: " + e.getMessage());
+        }
+    }
+    // 코스 제작
 }

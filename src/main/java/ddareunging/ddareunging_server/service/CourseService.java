@@ -165,4 +165,12 @@ public class CourseService {
         // 찜한 코스 삭제
         likeRepository.deleteLikeByLikeId(likeId);
     }
+
+    @Transactional
+    public RegisterNewCourseResponseDTO postNewCourse(Long userId, RegisterNewCourseRequestDTO registerNewCourseRequestDTO) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid user ID"));
+        Course course = courseRepository.save(Course.of(user, registerNewCourseRequestDTO));
+        return new RegisterNewCourseResponseDTO(course.getCourseId());
+    }
 }
