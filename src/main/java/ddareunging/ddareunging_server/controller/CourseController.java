@@ -7,11 +7,9 @@ import ddareunging.ddareunging_server.dto.FindMyLikedCoursesResponseDTO;
 import ddareunging.ddareunging_server.service.AnotherUserCourseService;
 import ddareunging.ddareunging_server.service.CourseService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -38,6 +36,19 @@ public class CourseController {
         return ResponseEntity.ok(courseService.getLikedCoursesByUser(userId));
     }
     // 내가 찜한 코스 조회
+
+    @DeleteMapping("/likedcourse/delete/{like-id}")
+    public ResponseEntity<String> deleteLikeByLikeId(@PathVariable("like-id") Long likeId) {
+        try {
+            courseService.deleteCourse(likeId);
+            return ResponseEntity.ok("찜한 코스가 정상적으로 삭제되었습니다");
+        } catch (Exception e) {
+            // 예외 처리
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body("찜한 코스 삭제 중 오류가 발생했습니다.: " + e.getMessage());
+        }
+    }
+    // 찜한 코스 삭제
 
     @GetMapping("/usercourse")
     public ResponseEntity<FindAnotherUserCoursesReponseDTO> getCoursesByAnotherUser(@RequestParam("user-id") Long userId) {

@@ -137,13 +137,15 @@ public class CourseService {
                         .message("찜한 코스가 없습니다.").build();
             } // 조회된 코스가 없는 경우
 
-            List<CourseDTO> likedCoursesDTO = likes.stream()
+            List<LikedCourseDTO> likedCoursesDTO = likes.stream()
                     .map(like -> {
+                        Long likeId = like.getLikeId();
                         Course course = like.getCourse();
                         String userNickname = course.getUser().getNickname(); // 해당 course가 참조하는 user의 nickname, 즉 코스를 만든 사람의 닉네임을 가져옴
-                        return new CourseDTO(course.getCourseId(), course.getCourseName(), course.getCourseImage(), course.getCourseLike(), course.getTheme(), userNickname);
+                        return new LikedCourseDTO(likeId, course.getCourseId(), course.getCourseName(), course.getCourseImage(), course.getCourseLike(), course.getTheme(), userNickname);
                     })
                     .collect(Collectors.toList());
+            // 이후 찜한 코스를 삭제할 때 likeId가 필요하므로 LikedCourseDTO를 생성하여 처리함
 
             return FindMyLikedCoursesResponseDTO.builder()
                     .userId(userId)
@@ -156,5 +158,11 @@ public class CourseService {
                     .courses(new ArrayList<>()) // 비어있는 list로 초기화
                     .message("찜한 코스 조회 중 오류가 발생했습니다.: " + e.getMessage()).build();
         }
+    }
+
+    @Transactional
+    public void deleteCourse(Long likeId) throws Exception {
+        // 찜한 코스 삭제
+        likeRepository.deleteLikeByLikeId(likeId);
     }
 }

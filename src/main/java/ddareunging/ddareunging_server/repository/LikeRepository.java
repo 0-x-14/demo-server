@@ -9,4 +9,6 @@ import java.util.List;
 public interface LikeRepository extends JpaRepository<Like, Long>  {
     @Query("SELECT l FROM Like l WHERE l.user.userId = :userId")
     List<Like> findLikeByUserId(Long userId);
+
+    void deleteLikeByLikeId(Long likeId);
 }
