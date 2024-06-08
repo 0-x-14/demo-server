@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 public class Like extends BaseEntity {
 
     @Id
-    private Long like_id;
+    private Long likeId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId", referencedColumnName = "userId")

@@ -157,4 +157,10 @@ public class CourseService {
                     .message("찜한 코스 조회 중 오류가 발생했습니다.: " + e.getMessage()).build();
         }
     }
+
+    @Transactional
+    public void deleteCourse(Long likeId) throws Exception {
+        // 찜한 코스 삭제
+        likeRepository.deleteLikeByLikeId(likeId);
+    }
 }
