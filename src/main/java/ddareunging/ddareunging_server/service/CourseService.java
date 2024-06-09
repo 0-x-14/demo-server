@@ -128,7 +128,7 @@ public class CourseService {
     }
 
     @Transactional
-    public void deleteCourse(Long likeId) throws Exception {
+    public void deleteLikeCourseAndUpdateCourseLike(Long likeId) throws Exception {
         // 찜한 코스 삭제
 
         Like like = likeRepository.findLikeByLikeId(likeId);
@@ -138,7 +138,14 @@ public class CourseService {
             throw new IllegalArgumentException("존재하지 않는 likeId입니다");
         }
 
+        // 찜한 코스 삭제
         likeRepository.deleteLikeByLikeId(likeId);
+
+        // course 엔티티의 courseLike 값 감소
+        Course course = like.getCourse();
+        System.out.println("course is : " + course);
+        course.setCourseLike(course.getCourseLike() - 1);
+        courseRepository.save(course);
     }
 
     @Transactional
