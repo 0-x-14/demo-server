@@ -21,7 +21,7 @@ import java.util.Optional;
 //@RestController
 @Controller
 @RequestMapping("")
-
+@CrossOrigin(origins = "http://localhost:3000")
 
 public class LoginController {
 

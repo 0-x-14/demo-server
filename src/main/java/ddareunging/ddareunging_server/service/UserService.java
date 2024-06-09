@@ -12,7 +12,7 @@ import java.util.HashMap;
 
 @Slf4j
 
-// 사용자 정보 저장 서비s스
+// 사용자 정보 저장 서비스
 
 @Service
 public class UserService {
@@ -28,7 +28,7 @@ public class UserService {
         user.setUser_name(userInfo.get("name").toString());
         user.setEmail(userInfo.get("email").toString());
         user.setProfile_image(userInfo.get("profileImage").toString());
-        user.setUser_status(0);  // 활성 상태를 나타내는 1 사용
+        user.setUser_status(0);  // 활성 상태를 나타내는 0 사용
 
         return userRepository.save(user);  // 데이터베이스에 저장
     }

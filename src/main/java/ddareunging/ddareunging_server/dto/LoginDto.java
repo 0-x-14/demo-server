@@ -1,4 +1,4 @@
-package ddareunging.ddareunging_server.Dto;
+package ddareunging.ddareunging_server.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
