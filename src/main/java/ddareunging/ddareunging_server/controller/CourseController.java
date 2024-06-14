@@ -56,7 +56,7 @@ public class CourseController {
     @DeleteMapping("/likedcourse/delete/{like-id}")
     public ResponseEntity<String> deleteLikeByLikeId(@PathVariable("like-id") Long likeId) {
         try {
-            courseService.deleteCourse(likeId);
+            courseService.deleteLikeCourseAndUpdateCourseLike(likeId);
             return ResponseEntity.ok("찜한 코스가 정상적으로 삭제되었습니다");
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("잘못된 요청입니다: " + e.getMessage());

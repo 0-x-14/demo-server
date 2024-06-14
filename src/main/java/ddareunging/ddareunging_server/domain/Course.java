@@ -22,6 +22,8 @@ public class Course extends BaseEntity {
 
     private String courseImage;
     private Integer courseLike;
+    public void setCourseLike(Integer courseLike) { this.courseLike = courseLike; }
+
     private String courseName;
     private String detail;
     private Integer theme;
