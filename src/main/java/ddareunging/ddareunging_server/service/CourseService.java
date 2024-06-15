@@ -4,6 +4,7 @@ import ddareunging.ddareunging_server.domain.Course;
 import ddareunging.ddareunging_server.domain.Like;
 import ddareunging.ddareunging_server.domain.Spot;
 import ddareunging.ddareunging_server.domain.User;
+import ddareunging.ddareunging_server.domain.enums.CourseTheme;
 import ddareunging.ddareunging_server.domain.enums.SpotType;
 import ddareunging.ddareunging_server.dto.*;
 import ddareunging.ddareunging_server.repository.CourseRepository;
@@ -36,7 +37,7 @@ public class CourseService {
     }
 
     @Transactional
-    public FindCoursesResponseDTO getCoursesByTheme(Integer theme) throws Exception {
+    public FindCoursesResponseDTO getCoursesByTheme(CourseTheme theme) throws Exception {
         // 테마로 코스 조회
 
         List<Course> courses = courseRepository.findCoursesByTheme(theme);

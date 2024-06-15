@@ -2,6 +2,7 @@ package ddareunging.ddareunging_server.domain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import ddareunging.ddareunging_server.domain.common.BaseEntity;
+import ddareunging.ddareunging_server.domain.enums.CourseTheme;
 import ddareunging.ddareunging_server.dto.RegisterNewCourseRequestDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -26,7 +27,9 @@ public class Course extends BaseEntity {
 
     private String courseName;
     private String detail;
-    private Integer theme;
+
+    @Enumerated(EnumType.STRING)
+    private CourseTheme theme;
     private Float distance;
     private Integer kcal;
     private Integer time;

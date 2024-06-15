@@ -1,5 +1,6 @@
 package ddareunging.ddareunging_server.controller;
 
+import ddareunging.ddareunging_server.domain.enums.CourseTheme;
 import ddareunging.ddareunging_server.dto.*;
 import ddareunging.ddareunging_server.service.AnotherUserCourseService;
 import ddareunging.ddareunging_server.service.CourseService;
@@ -17,9 +18,15 @@ public class CourseController {
     private final AnotherUserCourseService anotherUserCourseService;
 
     @GetMapping("")
-    public ResponseEntity<?> getCoursesByTheme(@RequestParam("theme-number") Integer theme) {
+    public ResponseEntity<?> getCoursesByTheme(@RequestParam("theme-number") String theme) {
         try {
-            return ResponseEntity.ok(courseService.getCoursesByTheme(theme));
+            // theme 파라미터를 CourseTheme 열거형으로 변환
+            CourseTheme courseTheme = CourseTheme.valueOf(theme.toUpperCase());
+
+            // 변환된 CourseTheme을 사용하여 서비스 호출
+            FindCoursesResponseDTO response = courseService.getCoursesByTheme(courseTheme);
+
+            return ResponseEntity.ok(response);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("잘못된 요청입니다: " + e.getMessage());
         } catch (Exception e) {
