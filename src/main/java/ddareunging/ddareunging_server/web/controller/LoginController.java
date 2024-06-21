@@ -23,11 +23,11 @@ import java.util.Optional;
 @RequestMapping("")
 @CrossOrigin(origins = "http://localhost:3000")
 
+
 public class LoginController {
 
     @Value("${kakaoApi.serviceKey}")
     private String client_id;
-
 
     @Autowired
     private KakaoService kakaoService;
@@ -44,6 +44,9 @@ public class LoginController {
             String accessToken = kakaoService.getAccessTokenFromKakao(client_id, code);
             HashMap<String, Object> userInfo = kakaoService.getUserInfo(accessToken);
             Optional<User> existingUser = userRepository.findById(Long.parseLong(userInfo.get("id").toString()));
+            // 토큰 받아와지는지 확인 코드
+            session.setAttribute("kakaoToken", accessToken);
+            log.info("Access token saved to session: {}", accessToken);  // 로그 추가
 
             if (existingUser.isPresent()) {
                 session.setAttribute("user", existingUser.get());
@@ -85,6 +88,32 @@ public class LoginController {
         String logoutUrl = "https://kauth.kakao.com/oauth/logout?client_id=" + clientId + "&logout_redirect_uri=" + redirectUri;
         return "redirect:" + logoutUrl;
 
+    }
+
+    // 카카오 탈퇴
+    @PostMapping("/unlink")
+    public String unlink(HttpSession session, Model model) {
+        String accessToken = (String) session.getAttribute("kakaoToken");
+        log.info("Unlinking with access token: {}", accessToken);  // 로그 추가
+        User user = (User) session.getAttribute("user");
+
+        if (accessToken != null && !accessToken.isEmpty()) {
+            try {
+                kakaoService.unlinkKakao(accessToken);
+                log.info("Unlink successful for accessToken: {}", accessToken);
+                userService.deleteUser(user); // 사용자 정보 삭제
+                session.invalidate(); // 세션 무효화
+                model.addAttribute("message", "탈퇴가 완료되었습니다.");
+                return "redirect:/"; // 홈 페이지로 리다이렉트
+            } catch (IOException e) {
+                log.error("Error during Kakao unlink", e);
+                model.addAttribute("error", "탈퇴 중 오류가 발생했습니다.");
+                return "error";
+            }
+        } else {
+            model.addAttribute("error", "유효한 세션이 없습니다.");
+            return "error";
+        }
     }
 
 
