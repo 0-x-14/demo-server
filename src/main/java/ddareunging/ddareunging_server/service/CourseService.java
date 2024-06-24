@@ -14,11 +14,14 @@ import ddareunging.ddareunging_server.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import jakarta.transaction.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+
+
 
 @Transactional
 @Service
@@ -34,6 +37,38 @@ public class CourseService {
         this.likeRepository = likeRepository;
         this.userRepository = userRepository;
         this.spotRepository = spotRepository;
+    }
+  
+    public List<Course> findAll() {
+        return courseRepository.findAll();
+    }
+
+    public Course findById(Long id) {
+        Course course = courseRepository.findById(id).orElseThrow(() -> new RuntimeException("Course not found"));
+        List<Spot> spots = spotRepository.findByCourseCourseId(id);
+        course.setSpots(spots);
+        return course;
+    }
+
+    public Course createCourse(Course course, Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+        course.setUser(user);
+        return courseRepository.save(course);
+    }
+  
+    // 코스 찜하기 기능
+    public Course likeCourse(Long id) {
+        Course course = courseRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Course not found"));
+        course.setCourseLike(course.getCourseLike() + 1);
+        return courseRepository.save(course);
+    }
+
+    public Course unlikeCourse(Long id) {
+        Course course = courseRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Course not found"));
+        course.setCourseLike(course.getCourseLike() - 1);
+        return courseRepository.save(course);
     }
 
     @Transactional

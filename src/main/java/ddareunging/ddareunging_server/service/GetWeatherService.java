@@ -1,7 +1,6 @@
 package ddareunging.ddareunging_server.service;
 
 import ddareunging.ddareunging_server.domain.Weather;
-import ddareunging.ddareunging_server.dto.WeatherResponseDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
 import org.json.JSONException;

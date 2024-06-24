@@ -144,9 +144,59 @@ import java.util.Map;
             }
         }
 
+        // 카카오 탈퇴
+//        public void unlinkKakao(String accessToken) {
+//            String reqURL = "https://kapi.kakao.com/v1/user/unlink";
+//            try {
+//                URL url = new URL(reqURL);
+//                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+//                conn.setRequestMethod("POST");
+//                conn.setRequestProperty("Authorization", "Bearer " + accessToken);
+//
+//                int responseCode = conn.getResponseCode();
+//                System.out.println("responseCode : " + responseCode);
+//
+//                BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+//
+//                String result = "";
+//                String line = "";
+//
+//                while ((line = br.readLine()) != null) {
+//                    result += line;
+//                }
+//                System.out.println(result);
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }
 
+        public void unlinkKakao(String accessToken) throws IOException {
+            String reqURL = "https://kapi.kakao.com/v1/user/unlink";
+            URL url = new URL(reqURL);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Authorization", "Bearer " + accessToken);
+            conn.setRequestProperty("Content-type", "application/x-www-form-urlencoded");
 
+            int responseCode = conn.getResponseCode();
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                StringBuilder result = new StringBuilder();
+                String line;
+                while ((line = br.readLine()) != null) {
+                    result.append(line);
+                }
+                br.close();
 
+                // 연결 해제 응답 파싱 및 로깅
+                ObjectMapper objectMapper = new ObjectMapper();
+                JsonNode jsonNode = objectMapper.readTree(result.toString());
+                Long id = jsonNode.get("id").asLong();
+                log.info("Unlinked successfully. Kakao user ID: " + id);
+            } else {
+                log.error("Failed to unlink from Kakao. HTTP Status: " + responseCode);
+            }
+        }
 
     }
 

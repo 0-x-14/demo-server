@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.List;
+
 
 @Getter
 @Setter
@@ -22,6 +24,9 @@ public class User {
     private String email;
     private String profile_image;
     private Integer user_status;
+
+//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<Like> likes;
 
 
     public Long getUserId() {
@@ -72,6 +77,8 @@ public class User {
     public void setUser_status(Integer user_status) {
         this.user_status = user_status;
     }
+
+
 
     public static User createUser(String username, String nickname, String email, String profile_image, Integer user_status) {
         User user = new User();

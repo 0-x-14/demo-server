@@ -1,6 +1,9 @@
 package ddareunging.ddareunging_server.service;
 
 import ddareunging.ddareunging_server.domain.User;
+import ddareunging.ddareunging_server.repository.CourseRepository;
+import ddareunging.ddareunging_server.repository.LikeRepository;
+import ddareunging.ddareunging_server.repository.ReplyRepository;
 import ddareunging.ddareunging_server.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
@@ -12,13 +15,19 @@ import java.util.HashMap;
 
 @Slf4j
 
-// 사용자 정보 저장 서비s스
+// 사용자 정보 저장 서비스
 
 @Service
 public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private LikeRepository likeRepository;
+    @Autowired
+    private CourseRepository courseRepository;
+    @Autowired
+    private ReplyRepository replyRepository;
 
     @Transactional
     public User saveUser(HashMap<String, Object> userInfo) {
@@ -28,7 +37,7 @@ public class UserService {
         user.setUser_name(userInfo.get("name").toString());
         user.setEmail(userInfo.get("email").toString());
         user.setProfile_image(userInfo.get("profileImage").toString());
-        user.setUser_status(0);  // 활성 상태를 나타내는 1 사용
+        user.setUser_status(0);  // 활성 상태를 나타내는 0 사용
 
         return userRepository.save(user);  // 데이터베이스에 저장
     }
@@ -59,6 +68,30 @@ public class UserService {
         return user;
     }
 
+    // 카카오 탈퇴
+    @Transactional
+    public void deleteUser(User user) {
+        Long userId = user.getUser_id();
+        // 유저와 관련된 Like 엔티티 삭제
+        //likeRepository.deleteLikesByUserId(user.getUser_id());
+        likeRepository.deleteLikesByUserId(userId);
+        // 유저와 관련된 Reply 엔티티 삭제
+        replyRepository.deleteRepliesByUserId(userId);
+        // 유저와 관련된 Course 엔티티 삭제
+        courseRepository.deleteCoursesByUserId(userId);
+        // 최종적으로 유저 삭제
+        userRepository.delete(user);
+    }
+
+    // like 테이블의 외래키로 되어있는 유저 아이디 삭제
+//    @Transactional
+//    public void deleteUserAndAssociations(User user) {
+//        // 관련된 like 데이터 삭제
+//        likeRepository.deleteByUser(user.getUser_id());
+//
+//        // 사용자 삭제
+//        userRepository.delete(user);
+//    }
 
 }
 
