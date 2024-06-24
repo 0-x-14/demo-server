@@ -41,7 +41,7 @@ public class Reply extends BaseEntity {
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "courseId", referencedColumnName = "courseId")
+    @JoinColumn(name = "course_id", referencedColumnName = "course_id")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @JsonBackReference
     private Course course;
@@ -84,7 +84,7 @@ public class Reply extends BaseEntity {
         reply.setReplyContent(replyRequest.getReplyContent());
         reply.setCourse(course);
         reply.setUser(user);
-        reply.setReplyTime(LocalDateTime.now());
+        //reply.setReplyTime(LocalDateTime.now());
         return reply;
     }
 

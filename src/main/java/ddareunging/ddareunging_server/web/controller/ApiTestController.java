@@ -1,4 +1,4 @@
-package ddareunging.ddareunging_server.controller;
+package ddareunging.ddareunging_server.web.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;

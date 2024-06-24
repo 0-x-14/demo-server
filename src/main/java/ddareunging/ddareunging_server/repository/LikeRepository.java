@@ -13,7 +13,7 @@ import java.util.List;
 public interface LikeRepository extends JpaRepository<Like, Long> {
     @Modifying
     @Transactional
-    @Query("DELETE FROM Like l WHERE l.user.user_id = :userId")
+    @Query("DELETE FROM Like l WHERE l.user.userId = :userId")
     void deleteLikesByUserId(@Param("userId") Long userId);
   
     @Query("SELECT l FROM Like l WHERE l.user.userId = :userId")

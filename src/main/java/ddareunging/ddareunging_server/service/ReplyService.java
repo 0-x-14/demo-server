@@ -34,15 +34,4 @@ public class ReplyService {
         Reply reply = Reply.createReply(user, course, replyRequestDto);
         return replyRepository.save(reply);
     }
-
-    //실험용
-//    public Reply createReply(ReplyRequestDto replyRequestDto) {
-//        Course course = courseRepository.findById(replyRequestDto.getCourseId())
-//                .orElseThrow(() -> new RuntimeException("Course not found"));
-//        User user = userRepository.findById(replyRequestDto.getUserId())
-//                .orElseThrow(() -> new RuntimeException("User not found"));
-//        Reply reply = Reply.createReply(user, course, replyRequestDto);
-//        return replyRepository.save(reply);
-//    }
-
 }

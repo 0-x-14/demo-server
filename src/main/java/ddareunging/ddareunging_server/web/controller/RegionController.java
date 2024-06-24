@@ -1,4 +1,4 @@
-package ddareunging.ddareunging_server.controller;
+package ddareunging.ddareunging_server.web.controller;
 
 import ddareunging.ddareunging_server.domain.Region;
 import jakarta.persistence.EntityManager;

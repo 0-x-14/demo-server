@@ -75,7 +75,8 @@
     async function fetchCourseDetails(courseId) {
         try {
             // API로부터 코스 정보를 가져옵니다.
-            const courseResponse = await fetch(`http://localhost:8080/api/courses/${courseId}`);
+            // const courseResponse = await fetch(`http://localhost:8080/api/courses/${courseId}`);
+            const courseResponse = await fetch(`http://localhost:8080/course/${courseId}`);
             if (!courseResponse.ok) {
                 throw new Error('Network response was not ok');
             }
@@ -175,9 +176,9 @@
 
         let url;
         if (likeButton.textContent === '♡') {
-            url = `http://localhost:8080/api/courses/${courseId}/like`;
+            url = `http://localhost:8080/course/${courseId}/like`;
         } else {
-            url = `http://localhost:8080/api/courses/${courseId}/unlike`;
+            url = `http://localhost:8080/course/${courseId}/unlike`;
         }
 
         try {

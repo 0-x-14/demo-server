@@ -34,27 +34,24 @@ public class Spot {
     private Double spotLng;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "courseId", referencedColumnName = "courseId")
+    @JoinColumn(name = "course_id", referencedColumnName = "course_id")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @JsonBackReference
     private Course course;
 
-    // Getters and setters
-
-
-    public Long getSpot_id() {
-        return spot_id;
+    public Long getSpotId() {
+        return spotId;
     }
 
-    public void setSpot_id(Long spot_id) {
-        this.spot_id = spot_id;
+    public void setSpotId(Long spotId) {
+        this.spotId = spotId;
     }
 
-    public String getSpotType() {
+    public SpotType getSpotType() {
         return spotType;
     }
 
-    public void setSpotType(String spotType) {
+    public void setSpotType(SpotType spotType) {
         this.spotType = spotType;
     }
 

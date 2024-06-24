@@ -13,7 +13,7 @@ public interface ReplyRepository extends JpaRepository<Reply, Long> {
     List<Reply> findByCourseCourseId(Long courseId);
     @Modifying
     @Transactional
-    @Query("DELETE FROM Reply r WHERE r.user.user_id = :userId")
+    @Query("DELETE FROM Reply r WHERE r.user.userId = :userId")
     void deleteRepliesByUserId(@Param("userId") Long userId);
   
     List<Reply> findRepliesByUserUserId(Long userId);
