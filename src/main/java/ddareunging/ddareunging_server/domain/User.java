@@ -78,8 +78,6 @@ public class User {
         this.user_status = user_status;
     }
 
-
-
     public static User createUser(String username, String nickname, String email, String profile_image, Integer user_status) {
         User user = new User();
         user.setUser_name(username);

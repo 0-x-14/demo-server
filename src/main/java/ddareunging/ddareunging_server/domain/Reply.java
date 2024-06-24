@@ -41,7 +41,7 @@ public class Reply extends BaseEntity {
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "courseId", referencedColumnName = "courseId")
+    @JoinColumn(name = "course_id", referencedColumnName = "course_id")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @JsonBackReference
     private Course course;
