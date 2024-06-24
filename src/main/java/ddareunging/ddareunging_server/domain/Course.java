@@ -22,7 +22,7 @@ import java.util.List;
 @Entity
 @Getter
 @Builder
-@ToString
+//@ToString(exclude = {"replies", "spots", "user"})
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "Course")
@@ -167,8 +167,23 @@ public class Course extends BaseEntity {
         return spots;
     }
 
+    public void addSpot(Spot spot) {
+        spots.add(spot);
+        spot.setCourse(this);
+    }
+
+    public void removeSpot(Spot spot) {
+        spots.remove(spot);
+        spot.setCourse(null);
+    }
+
     public void setSpots(List<Spot> spots) {
-        this.spots = spots;
+        this.spots.clear();
+        if (spots != null) {
+            for (Spot spot : spots) {
+                addSpot(spot);
+            }
+        }
     }
 
     public static Course of(User user, RegisterNewCourseRequestDTO registerNewCourseRequestDTO) {
