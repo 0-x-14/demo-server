@@ -1,7 +1,7 @@
 package ddareunging.ddareunging_server.domain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-//import ddareunging.ddareunging_server.domain.common.BaseEntity;
+import ddareunging.ddareunging_server.domain.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "`like`") // 예약어 Like와 충돌하지 않게 하기 위함
-public class Like {
+public class Like extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,7 +22,7 @@ public class Like {
     private Long likeId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "userId", referencedColumnName = "userId")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private User user;
 
@@ -34,7 +34,7 @@ public class Like {
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "course_id")
+    @JoinColumn(name = "courseId", referencedColumnName = "courseId")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Course course;
 }

@@ -15,5 +15,6 @@ public interface ReplyRepository extends JpaRepository<Reply, Long> {
     @Transactional
     @Query("DELETE FROM Reply r WHERE r.user.user_id = :userId")
     void deleteRepliesByUserId(@Param("userId") Long userId);
-
+  
+    List<Reply> findRepliesByUserUserId(Long userId);
 }

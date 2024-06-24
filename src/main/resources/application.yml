@@ -23,6 +23,9 @@ spring:
     mode: HTML
     encoding: UTF-8
     cache: false
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
 
 weatherApi:
   serviceKey: ${weather.servicekey}
@@ -35,3 +38,10 @@ kakaoApi:
 resources:
   location: C:/Users/jooye/Ddareunging-Server/src/main/resources # 개발 환경
   real.properties: # 운영 환경 추가해야 함
+
+tmap:
+  api-key: ${tmap.apikey} #"tPLkF7VZBwIZSU1lW8N03zbLJTwYAGG3sEzLOQE6"
+
+#  REACT_APP_TMAP_API_KEY=tPLkF7VZBwIZSU1lW8N03zbLJTwYAGG3sEzLOQE6
+#  REACT_APP_KAKAO_REST_API_KEY=282f0bcb67baf674c825363575205734
+#  REACT_APP_KAKAO_REDIRECT_URI=http://localhost:3000/callback

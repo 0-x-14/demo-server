@@ -1,18 +1,29 @@
 package ddareunging.ddareunging_server.domain;
 
-
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import ddareunging.ddareunging_server.domain.enums.SpotType;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
 
 @Entity
+@Getter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Spot {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long spot_id;
-
+    private Long spotId;
+  
+    @Enumerated(EnumType.STRING)
     @Column(name = "spot_type")
-    private String spotType;
-
+    private SpotType spotType;
+  
     @Column(name = "spot_name")
     private String spotName;
 
@@ -22,8 +33,9 @@ public class Spot {
     @Column(name = "spot_lng")
     private Double spotLng;
 
-    @ManyToOne
-    @JoinColumn(name = "course_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "courseId", referencedColumnName = "courseId")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @JsonBackReference
     private Course course;
 

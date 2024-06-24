@@ -18,7 +18,7 @@ import java.util.List;
 public class User {
     @Id
 
-    private Long user_id;
+    private Long userId;
     private String user_name;
     private String nickname;
     private String email;
@@ -29,12 +29,12 @@ public class User {
 //    private List<Like> likes;
 
 
-    public Long getUser_id() {
-        return user_id;
+    public Long getUserId() {
+        return userId;
     }
 
-    public void setUser_id(Long user_id) {
-        this.user_id = user_id;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
 

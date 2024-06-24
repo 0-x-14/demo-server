@@ -1,9 +1,15 @@
 package ddareunging.ddareunging_server.domain;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import ddareunging.ddareunging_server.domain.common.BaseEntity;
+import ddareunging.ddareunging_server.domain.enums.CourseTheme;
+import ddareunging.ddareunging_server.dto.RegisterNewCourseRequestDTO;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -12,41 +18,49 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+  
+@Entity
 @Getter
-@Setter
+@Builder
 @ToString
 @NoArgsConstructor
-@Entity
+@AllArgsConstructor
 @Table(name = "Course")
-
-public class Course {
+public class Course extends BaseEntity {
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "course_id")
     private Long courseId;
 
-    @Column(name = "course_name")
-    private String courseName;
-
-    private String detail;
-
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
-
-    private int theme;
-    private float distance;
-    private int time;
-    private int kcal;
-
     @Column(name = "course_image")
     private String courseImage;
-
     @Column(name = "course_like")
-    private int courseLike;
+    private Integer courseLike;
+    public void setCourseLike(Integer courseLike) { this.courseLike = courseLike; }
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
+    @Column(name = "course_name")
+    private String courseName;
+    private String detail;
+  
+    @Enumerated(EnumType.STRING)
+    private CourseTheme theme;
+    private Float distance;
+    private Integer kcal;
+    private Integer time;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "userId", referencedColumnName = "userId")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private User user;
+  
+    @Transient
+    private String user_nickname;
+
+    public void setUserNickname(String nickname) {
+        this.user_nickname = nickname;
+    }
+
 
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
@@ -80,14 +94,6 @@ public class Course {
 
     public void setDetail(String detail) {
         this.detail = detail;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
     }
 
     public int getTheme() {
@@ -161,5 +167,19 @@ public class Course {
     public void setSpots(List<Spot> spots) {
         this.spots = spots;
     }
-}
 
+
+    public static Course of(User user, RegisterNewCourseRequestDTO registerNewCourseRequestDTO) {
+        // 새로운 코스를 등록
+        return Course.builder().courseImage(registerNewCourseRequestDTO.courseImage())
+                .courseLike(0)
+                .courseName(registerNewCourseRequestDTO.courseName())
+                .detail(registerNewCourseRequestDTO.courseDetail())
+                .theme(registerNewCourseRequestDTO.theme())
+                .distance(null)
+                .kcal(null)
+                .time(null)
+                .user(user)
+                .build();
+    }
+}

@@ -2,22 +2,31 @@ package ddareunging.ddareunging_server.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import ddareunging.ddareunging_server.dto.ReplyRequestDto;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import ddareunging.ddareunging_server.domain.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
 import java.time.LocalDateTime;
-
+  
+@Entity
 @Getter
+@Builder
 @Setter
 @ToString
 @NoArgsConstructor
-@Entity
+@AllArgsConstructor
 @Table(name = "Reply")
-
-public class Reply {
+@AttributeOverrides({
+        @AttributeOverride(name = "created_at", column = @Column(name = "reply_time"))
+})
+public class Reply extends BaseEntity {
+  
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "reply_id")
@@ -26,17 +35,16 @@ public class Reply {
     @Column(name = "reply_content")
     private String replyContent;
 
-    @Column(name = "reply_time")
-    private LocalDateTime replyTime;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "userId", referencedColumnName = "userId")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private User user;
 
-    @ManyToOne
-    @JoinColumn(name = "course_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "courseId", referencedColumnName = "courseId")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @JsonBackReference
     private Course course;
-
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
 
     public Long getReplyId() {
         return replyId;
@@ -52,14 +60,6 @@ public class Reply {
 
     public void setReplyContent(String replyContent) {
         this.replyContent = replyContent;
-    }
-
-    public LocalDateTime getReplyTime() {
-        return replyTime;
-    }
-
-    public void setReplyTime(LocalDateTime replyTime) {
-        this.replyTime = replyTime;
     }
 
     public Course getCourse() {
@@ -87,16 +87,6 @@ public class Reply {
         reply.setReplyTime(LocalDateTime.now());
         return reply;
     }
-
-    // 동적으로 되는지 실험
-//    public static Reply createReply(User user, Course course, ReplyRequestDto replyRequestDto) {
-//        Reply reply = new Reply();
-//        reply.setUser(user);
-//        reply.setCourse(course);
-//        reply.setReplyContent(replyRequestDto.getReplyContent());
-//        reply.setReplyTime(LocalDateTime.now());
-//        return reply;
-//    }
 
 
 }
