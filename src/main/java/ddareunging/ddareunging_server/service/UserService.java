@@ -71,7 +71,7 @@ public class UserService {
     // 카카오 탈퇴
     @Transactional
     public void deleteUser(User user) {
-        Long userId = user.getUser_id();
+        Long userId = user.getUserId();
         // 유저와 관련된 Like 엔티티 삭제
         //likeRepository.deleteLikesByUserId(user.getUser_id());
         likeRepository.deleteLikesByUserId(userId);

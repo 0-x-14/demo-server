@@ -71,13 +71,24 @@ public class Course extends BaseEntity {
     @JsonManagedReference
     private List<Spot> spots = new ArrayList<>();
 
-
     public Long getCourseId() {
         return courseId;
     }
 
     public void setCourseId(Long courseId) {
         this.courseId = courseId;
+    }
+
+    public String getCourseImage() {
+        return courseImage;
+    }
+
+    public void setCourseImage(String courseImage) {
+        this.courseImage = courseImage;
+    }
+
+    public Integer getCourseLike() {
+        return courseLike;
     }
 
     public String getCourseName() {
@@ -96,52 +107,36 @@ public class Course extends BaseEntity {
         this.detail = detail;
     }
 
-    public int getTheme() {
+    public CourseTheme getTheme() {
         return theme;
     }
 
-    public void setTheme(int theme) {
+    public void setTheme(CourseTheme theme) {
         this.theme = theme;
     }
 
-    public float getDistance() {
+    public Float getDistance() {
         return distance;
     }
 
-    public void setDistance(float distance) {
+    public void setDistance(Float distance) {
         this.distance = distance;
     }
 
-    public int getTime() {
-        return time;
-    }
-
-    public void setTime(int time) {
-        this.time = time;
-    }
-
-    public int getKcal() {
+    public Integer getKcal() {
         return kcal;
     }
 
-    public void setKcal(int kcal) {
+    public void setKcal(Integer kcal) {
         this.kcal = kcal;
     }
 
-    public String getCourseImage() {
-        return courseImage;
+    public Integer getTime() {
+        return time;
     }
 
-    public void setCourseImage(String courseImage) {
-        this.courseImage = courseImage;
-    }
-
-    public int getCourseLike() {
-        return courseLike;
-    }
-
-    public void setCourseLike(int courseLike) {
-        this.courseLike = courseLike;
+    public void setTime(Integer time) {
+        this.time = time;
     }
 
     public User getUser() {
@@ -150,6 +145,14 @@ public class Course extends BaseEntity {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public String getUser_nickname() {
+        return user_nickname;
+    }
+
+    public void setUser_nickname(String user_nickname) {
+        this.user_nickname = user_nickname;
     }
 
     public List<Reply> getReplies() {
@@ -167,7 +170,6 @@ public class Course extends BaseEntity {
     public void setSpots(List<Spot> spots) {
         this.spots = spots;
     }
-
 
     public static Course of(User user, RegisterNewCourseRequestDTO registerNewCourseRequestDTO) {
         // 새로운 코스를 등록

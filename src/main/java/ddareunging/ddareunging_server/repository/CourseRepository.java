@@ -15,7 +15,7 @@ import java.util.List;
 public interface CourseRepository extends JpaRepository<Course, Long> {
     @Modifying
     @Transactional
-    @Query("DELETE FROM Course c WHERE c.user.user_id = :userId")
+    @Query("DELETE FROM Course c WHERE c.user.userId = :userId")
     void deleteCoursesByUserId(@Param("userId") Long userId);
   
     List<Course> findCoursesByTheme(CourseTheme theme);

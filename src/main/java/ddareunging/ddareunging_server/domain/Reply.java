@@ -84,7 +84,7 @@ public class Reply extends BaseEntity {
         reply.setReplyContent(replyRequest.getReplyContent());
         reply.setCourse(course);
         reply.setUser(user);
-        reply.setReplyTime(LocalDateTime.now());
+        //reply.setReplyTime(LocalDateTime.now());
         return reply;
     }
 
