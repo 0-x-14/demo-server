@@ -1,1 +1,212 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"/><link rel="icon" href="/public/logo.png"/><meta name="viewport" content="width=device-width,initial-scale=1"/><meta name="theme-color" content="#000000"/><meta name="description" content="Web site created using create-react-app"/><link rel="apple-touch-icon" href="/logo192.png"/><link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/><link rel="manifest" href="/manifest.json"/><title>따릉잉</title><script src="https://apis.openapi.sk.com/tmap/jsv2?version=1&appKey=tPLkF7VZBwIZSU1lW8N03zbLJTwYAGG3sEzLOQE6"></script><script defer="defer" src="/js/main.483908ec.js"></script><link href="/css/main.3cc3b430.css" rel="stylesheet"></head><body><noscript>You need to enable JavaScript to run this app.</noscript><div id="root"></div></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Details</title>
+    <style>
+        /* 필요한 스타일을 여기에 추가합니다 */
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .course-details {
+            margin: 20px;
+        }
+        .comment {
+            border-bottom: 1px solid #ddd;
+            padding: 10px;
+        }
+        .comment-form {
+            margin-top: 20px;
+        }
+        .comment-form textarea {
+            width: 100%;
+            height: 100px;
+        }
+        .comment-form button {
+            margin-top: 10px;
+            padding: 10px 20px;
+        }
+        .like-button {
+            display: inline-block;
+            cursor: pointer;
+            font-size: 24px;
+            color: #ff0000;
+        }
+    </style>
+</head>
+<body>
+<div class="course-details">
+    <h1 id="course_name">Course Name</h1>
+    <p id="detail">Course Detail</p>
+    <p id="course_info"></p>
+
+    <div>
+        <span id="likeButton" class="like-button" onclick="toggleLike()">♡</span> <span id="likeCount">0</span> Likes
+    </div>
+
+    <div>
+        <h3>Course Creator Information</h3>
+        <p>Created by: <span id="creatorNickname"></span> (ID: <span id="creatorId"></span>)</p>
+        <p>Created at: <span id="createdAt"></span></p>
+    </div>
+
+    <div>
+        <h3>Waypoints</h3>
+        <ul id="waypoints"></ul>
+    </div>
+
+    <h3>Comments</h3>
+    <div id="comments"></div>
+
+    <div class="comment-form">
+        <textarea id="commentContent" placeholder="댓글을 작성하세요"></textarea>
+        <button onclick="submitComment()">작성 완료</button>
+        <button onclick="clearComment()">취소</button>
+    </div>
+</div>
+
+<script>
+    function getQueryParam(param) {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(param);
+    }
+
+    async function fetchCourseDetails(courseId) {
+        try {
+            // API로부터 코스 정보를 가져옵니다.
+            // const courseResponse = await fetch(`http://localhost:8080/api/courses/${courseId}`);
+            const courseResponse = await fetch(`http://localhost:8080/course/${courseId}`);
+            if (!courseResponse.ok) {
+                throw new Error('Network response was not ok');
+            }
+
+            // JSON 형식으로 응답을 파싱합니다.
+            const course = await courseResponse.json();
+            console.log("Course data:", course);  // 콘솔에 데이터 출력
+
+            // 코스 정보를 HTML 요소에 채웁니다.
+            document.getElementById('course_name').textContent = course.courseName;
+            document.getElementById('detail').textContent = course.detail;
+            document.getElementById('course_info').textContent = `Distance: ${course.distance} km, Time: ${course.time} min, Calories: ${course.kcal} kcal`;
+            document.getElementById('likeCount').textContent = course.courseLike;
+
+            // 코스를 만든 사람의 정보를 HTML 요소에 채웁니다.
+            document.getElementById('creatorNickname').textContent = course.user.nickname;
+            document.getElementById('creatorId').textContent = course.user.user_id;
+            document.getElementById('createdAt').textContent = new Date(course.createdAt).toLocaleString();
+
+            // 경유지 정보를 HTML 요소에 채웁니다.
+            const waypointsContainer = document.getElementById('waypoints');
+            waypointsContainer.innerHTML = '';
+            course.spots.forEach(spot => {
+                const spotElement = document.createElement('li');
+                spotElement.textContent = `${spot.spotType}: ${spot.spotName} (Lat: ${spot.spotLat}, Lng: ${spot.spotLng})`;
+                waypointsContainer.appendChild(spotElement);
+            });
+
+            // 댓글 컨테이너를 비웁니다.
+            const commentsContainer = document.getElementById('comments');
+            commentsContainer.innerHTML = '';
+
+            // 각 댓글을 HTML 요소로 만들어서 댓글 컨테이너에 추가합니다.
+            course.replies.forEach(reply => {
+                const commentElement = document.createElement('div');
+                commentElement.className = 'comment';
+                commentElement.innerHTML = `
+                    <p>${reply.replyContent}</p>
+                    <small>${reply.user.nickname} (ID: ${reply.user.user_id}) - ${new Date(reply.replyTime).toLocaleString()}</small>
+                `;
+                commentsContainer.appendChild(commentElement);
+            });
+        } catch (error) {
+            console.error('Failed to fetch course details:', error);
+        }
+    }
+
+    function clearComment() {
+        document.getElementById('commentContent').value = '';
+    }
+
+    async function submitComment() {
+        const courseId = getQueryParam('courseId');  // 동적으로 코스 ID를 가져옵니다.
+        //const userId = 1234; // 실제로는 동적으로 유저 ID를 가져와야 합니다.
+        const userId = 3460794882;
+        const content = document.getElementById('commentContent').value;
+
+        if (!content) {
+            alert('댓글 내용을 입력하세요.');
+            return;
+        }
+
+        // 새로운 댓글 객체를 생성합니다.
+        const newComment = {
+            replyContent: content,
+            courseId: courseId,
+            userId: userId
+        };
+
+        try {
+            // API로 새로운 댓글을 제출합니다.
+            const response = await fetch('http://localhost:8080/api/replies', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(newComment)
+            });
+
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+
+            // 코스 세부 정보를 다시 불러와서 갱신합니다.
+            fetchCourseDetails(courseId);
+            clearComment();
+
+        } catch (error) {
+            console.error('Failed to submit comment:', error);
+        }
+    }
+
+    async function toggleLike() {
+        const courseId = getQueryParam('courseId'); // 동적으로 코스 ID를 가져옵니다.
+        const likeButton = document.getElementById('likeButton');
+        const likeCount = document.getElementById('likeCount');
+
+        let url;
+        if (likeButton.textContent === '♡') {
+            url = `http://localhost:8080/course/${courseId}/like`;
+        } else {
+            url = `http://localhost:8080/course/${courseId}/unlike`;
+        }
+
+        try {
+            const response = await fetch(url, {
+                method: 'POST'
+            });
+
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+
+            const updatedCourse = await response.json();
+            likeCount.textContent = updatedCourse.courseLike;
+
+            if (likeButton.textContent === '♡') {
+                likeButton.textContent = '♥';
+            } else {
+                likeButton.textContent = '♡';
+            }
+        } catch (error) {
+            console.error('Failed to toggle like:', error);
+        }
+    }
+
+    // 페이지가 로드될 때, 코스 ID에 해당하는 코스 세부 정보를 불러옵니다.
+    const courseId = getQueryParam('courseId');
+    fetchCourseDetails(courseId);
+
+</script>
+</body>
+</html>

@@ -1,25 +1,38 @@
-package ddareunging.ddareunging_server.controller;
+package ddareunging.ddareunging_server.web.controller;
 
+import ddareunging.ddareunging_server.domain.Course;
+import ddareunging.ddareunging_server.service.CourseService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import ddareunging.ddareunging_server.domain.enums.CourseTheme;
 import ddareunging.ddareunging_server.dto.*;
 import ddareunging.ddareunging_server.service.AnotherUserCourseService;
-import ddareunging.ddareunging_server.service.CourseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/course")
 public class CourseController {
+    @Autowired
+    private CourseService courseService;
 
-    private final CourseService courseService;
+    @Autowired
     private final AnotherUserCourseService anotherUserCourseService;
 
     @GetMapping("")
-    public ResponseEntity<?> getCoursesByTheme(@RequestParam("theme-number") Integer theme) {
+    public ResponseEntity<?> getCoursesByTheme(@RequestParam("theme-number") String theme) {
         try {
-            return ResponseEntity.ok(courseService.getCoursesByTheme(theme));
+            // theme 파라미터를 CourseTheme 열거형으로 변환
+            CourseTheme courseTheme = CourseTheme.valueOf(theme.toUpperCase());
+
+            // 변환된 CourseTheme을 사용하여 서비스 호출
+            FindCoursesResponseDTO response = courseService.getCoursesByTheme(courseTheme);
+
+            return ResponseEntity.ok(response);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("잘못된 요청입니다: " + e.getMessage());
         } catch (Exception e) {
@@ -94,4 +107,32 @@ public class CourseController {
         }
     }
     // 코스 제작
+
+
+    @GetMapping("/all")
+    public List<Course> getAllCourses() {
+        return courseService.findAll();
+    }
+
+    @GetMapping("/{id}")
+    public Course getCourseById(@PathVariable Long id) {
+        return courseService.findById(id);
+    }
+
+    @PostMapping
+    public Course createCourse(@RequestBody Course course, @RequestParam Long userId) {
+        return courseService.createCourse(course, userId);
+    }
+
+    // 코스 찜하기 기능
+    @PostMapping("/{id}/like")
+    public Course likeCourse(@PathVariable Long id) {
+        return courseService.likeCourse(id);
+    }
+
+    @PostMapping("/{id}/unlike")
+    public Course unlikeCourse(@PathVariable Long id) {
+        return courseService.unlikeCourse(id);
+    }
+
 }

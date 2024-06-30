@@ -16,6 +16,33 @@
         <p class="mb-0">Enjoy your time here.</p>
     </div>
     <a th:href="@{/logout}" class="btn btn-primary">Logout</a>
+    <form th:action="@{/unlink}" method="post" class="mt-2">
+        <button type="submit" class="btn btn-danger">탈퇴하기</button>
+    </form>
 </div>
 </body>
 </html>
+
+
+
+<!--<!DOCTYPE html>-->
+<!--<html xmlns:th="http://www.thymeleaf.org">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <title>Home</title>-->
+<!--    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">-->
+<!--</head>-->
+<!--<body>-->
+<!--<div class="container mt-5">-->
+<!--    <h1>Welcome to Your Home Page!</h1>-->
+<!--    <p>This is your home screen after logging in.</p>-->
+<!--    <div class="alert alert-success" role="alert">-->
+<!--        <h4 class="alert-heading">Well done!</h4>-->
+<!--        <p>Hello, <span th:text="${user.user_name}">User</span>! You are now logged in.</p>-->
+<!--        <hr>-->
+<!--        <p class="mb-0">Enjoy your time here.</p>-->
+<!--    </div>-->
+<!--    <a th:href="@{/logout}" class="btn btn-primary">Logout</a>-->
+<!--</div>-->
+<!--</body>-->
+<!--</html>-->

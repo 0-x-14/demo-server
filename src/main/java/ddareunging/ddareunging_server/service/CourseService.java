@@ -2,19 +2,24 @@ package ddareunging.ddareunging_server.service;
 
 import ddareunging.ddareunging_server.domain.Course;
 import ddareunging.ddareunging_server.domain.Like;
+import ddareunging.ddareunging_server.domain.Spot;
 import ddareunging.ddareunging_server.domain.User;
+import ddareunging.ddareunging_server.domain.enums.CourseTheme;
+import ddareunging.ddareunging_server.domain.enums.SpotType;
 import ddareunging.ddareunging_server.dto.*;
 import ddareunging.ddareunging_server.repository.CourseRepository;
 import ddareunging.ddareunging_server.repository.LikeRepository;
+import ddareunging.ddareunging_server.repository.SpotRepository;
 import ddareunging.ddareunging_server.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+
+
 
 @Transactional
 @Service
@@ -22,16 +27,50 @@ public class CourseService {
     private final CourseRepository courseRepository;
     private final LikeRepository likeRepository;
     private final UserRepository userRepository;
+    private final SpotRepository spotRepository;
 
     @Autowired
-    public CourseService(CourseRepository courseRepository, LikeRepository likeRepository, UserRepository userRepository) {
+    public CourseService(CourseRepository courseRepository, LikeRepository likeRepository, UserRepository userRepository, SpotRepository spotRepository) {
         this.courseRepository = courseRepository;
         this.likeRepository = likeRepository;
         this.userRepository = userRepository;
+        this.spotRepository = spotRepository;
+    }
+  
+    public List<Course> findAll() {
+        return courseRepository.findAll();
+    }
+
+    public Course findById(Long id) {
+        Course course = courseRepository.findById(id).orElseThrow(() -> new RuntimeException("Course not found"));
+        List<Spot> spots = spotRepository.findByCourseCourseId(id);
+        course.setSpots(spots);
+        return course;
+    }
+
+    public Course createCourse(Course course, Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+        course.setUser(user);
+        return courseRepository.save(course);
+    }
+  
+    // 코스 찜하기 기능
+    public Course likeCourse(Long id) {
+        Course course = courseRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Course not found"));
+        course.setCourseLike(course.getCourseLike() + 1);
+        return courseRepository.save(course);
+    }
+
+    public Course unlikeCourse(Long id) {
+        Course course = courseRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Course not found"));
+        course.setCourseLike(course.getCourseLike() - 1);
+        return courseRepository.save(course);
     }
 
     @Transactional
-    public FindCoursesResponseDTO getCoursesByTheme(Integer theme) throws Exception {
+    public FindCoursesResponseDTO getCoursesByTheme(CourseTheme theme) throws Exception {
         // 테마로 코스 조회
 
         List<Course> courses = courseRepository.findCoursesByTheme(theme);
@@ -152,7 +191,29 @@ public class CourseService {
     public RegisterNewCourseResponseDTO postNewCourse(Long userId, RegisterNewCourseRequestDTO registerNewCourseRequestDTO) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid user ID"));
+
         Course course = courseRepository.save(Course.of(user, registerNewCourseRequestDTO));
+
+        List<SpotDTO> spots = registerNewCourseRequestDTO.spots();
+
+        boolean hasStart = spots.stream().anyMatch(spot -> spot.spotType() == SpotType.출발지);
+        boolean hasEnd = spots.stream().anyMatch(spot -> spot.spotType() == SpotType.도착지);
+        // 출발지와 도착지는 필수적으로 포함하고 있어야 하므로 검증하는 로직 추가
+
+        if (!hasStart && !hasEnd) {
+            throw new IllegalArgumentException("출발지와 도착지는 필수로 포함되어야 합니다.");
+        } else if (!hasStart) {
+            throw new IllegalArgumentException("출발지는 필수로 포함되어야 합니다.");
+        } else if (!hasEnd) {
+            throw new IllegalArgumentException("도착지는 필수로 포함되어야 합니다.");
+        }
+
+        for (SpotDTO spotDTO : spots) {
+            Spot spot = new Spot(null, spotDTO.spotType(), spotDTO.spotName(), spotDTO.spotLat(), spotDTO.spotLng(), course);
+            spotRepository.save(spot);
+        }
+        // spotId는 AUTO_INCREMENT 설정이 되어있으므로 null로 설정
+
         return new RegisterNewCourseResponseDTO(course.getCourseId());
     }
 }
